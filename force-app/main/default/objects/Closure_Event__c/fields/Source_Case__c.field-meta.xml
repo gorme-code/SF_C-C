@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Source_Case__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Pointer to the originating Closure_Submission Case. Lookup (NOT master-detail) so events outlive the Case.</description>
+    <label>Source Case</label>
+    <referenceTo>Case</referenceTo>
+    <relationshipLabel>Closure Events (Source)</relationshipLabel>
+    <relationshipName>Closure_Events_Source</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

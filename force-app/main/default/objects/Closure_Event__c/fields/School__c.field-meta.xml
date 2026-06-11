@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>School__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>The school this closure event applies to. Must be a School-RecordType Account (enforced by validation rule).</description>
+    <label>School</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Closure Events (School)</relationshipLabel>
+    <relationshipName>Closure_Events_School</relationshipName>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

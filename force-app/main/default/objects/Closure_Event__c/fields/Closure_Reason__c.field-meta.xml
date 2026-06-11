@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closure_Reason__c</fullName>
+    <description>Closure_Reason__mdt DeveloperName. Flows/Apex use it to look up the CMDT record (requires_makeup_default, etc.). Stored as text because custom objects cannot hold a true metadata-relationship lookup.</description>
+    <externalId>false</externalId>
+    <label>Closure Reason</label>
+    <length>40</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

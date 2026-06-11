@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Make_Up_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set by the Set_Make_Up_Required flow / Apex trigger. True unless reason is eLearning, non-instructional day, or the school year already meets minimum days.</description>
+    <label>Make Up Required</label>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

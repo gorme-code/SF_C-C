@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closure_Type__c</fullName>
+    <label>Closure Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Closed</fullName>
+                <default>true</default>
+                <label>Closed</label>
+            </value>
+            <value>
+                <fullName>Delayed</fullName>
+                <default>false</default>
+                <label>Delayed</label>
+            </value>
+            <value>
+                <fullName>Early Dismissal</fullName>
+                <default>false</default>
+                <label>Early Dismissal</label>
+            </value>
+            <value>
+                <fullName>Closed – eLearning</fullName>
+                <default>false</default>
+                <label>Closed – eLearning</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

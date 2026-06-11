@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Instructional_Day__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Was this a scheduled instructional day? Closures on non-instructional days do not count toward missed days or Tier.</description>
+    <label>Instructional Day</label>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
