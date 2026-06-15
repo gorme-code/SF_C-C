@@ -63,43 +63,67 @@ def record(name, passed, detail):
     print(f"[{'PASS' if passed else 'FAIL'}] {name}: {detail}")
 
 
+def _try_delete(sf_obj, rec_id):
+    try:
+        sf_obj.delete(rec_id)
+        return True
+    except Exception:
+        return False  # e.g. approval-locked records; best-effort cleanup
+
+
 def cleanup_prior_runs(sf):
-    """Delete any data from previous E2E runs so the script is repeatable.
+    """Delete data from previous E2E runs so the script is repeatable.
 
     Order matters: junctions (Restrict Delete) -> events -> cases. The run-as user
-    has Modify All Data, so the delete-block triggers allow these deletes.
+    has Modify All Data, so the delete-block triggers allow these deletes. Auto-created
+    waiver cases (no E2E external id) are found via the events they were stamped onto.
     """
-    counts = {"links": 0, "events": 0, "cases": 0}
+    counts = {"links": 0, "makeup": 0, "events": 0, "cases": 0, "waivers": 0}
 
-    # 1. Junctions pointing at E2E events (else Restrict Delete blocks the event delete)
+    # Auto-created waiver case ids (stamped onto E2E events as Waiver_Request_Case__c)
+    waiver_ids = set()
+    for r in sf.query(
+        "SELECT Waiver_Request_Case__c FROM Closure_Event__c "
+        "WHERE Source_Case__r.External_Id__c LIKE 'E2E-%' AND Waiver_Request_Case__c != null"
+    )["records"]:
+        if r["Waiver_Request_Case__c"]:
+            waiver_ids.add(r["Waiver_Request_Case__c"])
+
+    # 1. Junctions pointing at E2E events (else Restrict Delete blocks event deletes)
     for obj in ("Closure_Makeup_Link__c", "Waiver_Closure_Link__c"):
-        rows = sf.query(
+        for r in sf.query(
             f"SELECT Id FROM {obj} "
             "WHERE Closure_Event__r.Source_Case__r.External_Id__c LIKE 'E2E-%'"
-        )["records"]
-        for r in rows:
-            getattr(sf, obj).delete(r["Id"])
-            counts["links"] += 1
+        )["records"]:
+            if _try_delete(getattr(sf, obj), r["Id"]):
+                counts["links"] += 1
 
-    # 2. Closure events from E2E submission cases
-    rows = sf.query(
-        "SELECT Id FROM Closure_Event__c "
-        "WHERE Source_Case__r.External_Id__c LIKE 'E2E-%'"
-    )["records"]
-    for r in rows:
-        sf.Closure_Event__c.delete(r["Id"])
-        counts["events"] += 1
+    # 2. Makeup days created by the tests (tagged with an E2E- external id)
+    for r in sf.query("SELECT Id FROM Makeup_Day__c WHERE External_Id__c LIKE 'E2E-%'")["records"]:
+        if _try_delete(sf.Makeup_Day__c, r["Id"]):
+            counts["makeup"] += 1
 
-    # 3. E2E cases (submission cases carry the E2E- external id; any auto-created
-    #    waiver cases are children-by-reference and removed once their links are gone)
-    rows = sf.query("SELECT Id FROM Case WHERE External_Id__c LIKE 'E2E-%'")["records"]
-    for r in rows:
-        sf.Case.delete(r["Id"])
-        counts["cases"] += 1
+    # 3. Closure events from E2E submission cases
+    for r in sf.query(
+        "SELECT Id FROM Closure_Event__c WHERE Source_Case__r.External_Id__c LIKE 'E2E-%'"
+    )["records"]:
+        if _try_delete(sf.Closure_Event__c, r["Id"]):
+            counts["events"] += 1
+
+    # 4. E2E submission cases
+    for r in sf.query("SELECT Id FROM Case WHERE External_Id__c LIKE 'E2E-%'")["records"]:
+        if _try_delete(sf.Case, r["Id"]):
+            counts["cases"] += 1
+
+    # 5. Auto-created waiver cases (skip any locked by an in-flight approval)
+    for wid in waiver_ids:
+        if _try_delete(sf.Case, wid):
+            counts["waivers"] += 1
 
     print(
-        f"Cleanup: removed {counts['links']} link(s), "
-        f"{counts['events']} event(s), {counts['cases']} case(s).\n"
+        f"Cleanup: removed {counts['links']} link(s), {counts['makeup']} makeup day(s), "
+        f"{counts['events']} event(s), {counts['cases']} submission case(s), "
+        f"{counts['waivers']} waiver case(s).\n"
     )
 
 
@@ -197,7 +221,10 @@ def main():
     # ---------- UC-02 ----------
     start2, end2 = datetime.date(2026, 2, 16), datetime.date(2026, 2, 18)
     try:
-        res = submit("Single_School", [school_ids[0]], start2, end2, "E2E-UC02")
+        # school 3 (kept separate from school 1 so school 1 stays under the tier threshold
+        # and its UC-01 event remains deletable for UC-07). This 3-day range pushes school 3
+        # past Tier 2, which also exercises the auto-waiver path.
+        res = submit("Single_School", [school_ids[2]], start2, end2, "E2E-UC02")
         evs = events_for_case(res["id"])
         exp_sy = expected_school_year(start2)
         sy_ok = all(e["School_Year__c"] == exp_sy for e in evs)
@@ -261,6 +288,108 @@ def main():
             record("UC-07 delete blocked (non-admin)", ok, "delete blocked by trigger; record retained")
     else:
         record("UC-07 delete", False, "no UC-01 event id available to test")
+
+    # ---------- UC-14: tier boundary -> waiver ----------
+    waiver_soql = (
+        "SELECT COUNT() FROM Case WHERE RecordType.DeveloperName = 'Closure_Waiver_Request' "
+        f"AND Waiver_District__c = '{district_id}'"
+    )
+    uc14_waiver_id = None
+    try:
+        before = sf.query(waiver_soql)["totalSize"]
+        # school 2 already has 1 day from UC-03; +4 instructional days pushes it past Tier 2 (3)
+        submit("Single_School", [school_ids[1]], datetime.date(2026, 3, 2), datetime.date(2026, 3, 5), "E2E-UC14")
+        after = sf.query(waiver_soql)["totalSize"]
+        w = sf.query(
+            "SELECT Id, Waiver_Status__c, Total_Missed_Days__c, Tier__c FROM Case "
+            "WHERE RecordType.DeveloperName = 'Closure_Waiver_Request' "
+            f"AND Waiver_District__c = '{district_id}' ORDER BY CreatedDate DESC LIMIT 1"
+        )["records"]
+        w = w[0] if w else None
+        links = 0
+        if w:
+            uc14_waiver_id = w["Id"]
+            links = sf.query(
+                f"SELECT COUNT() FROM Waiver_Closure_Link__c WHERE Waiver_Case__c = '{w['Id']}'"
+            )["totalSize"]
+        ok = (
+            after == before + 1
+            and w is not None
+            and w["Waiver_Status__c"] == "Draft"
+            and (w["Total_Missed_Days__c"] or 0) > 3
+            and links >= 1
+        )
+        record(
+            "UC-14 tier boundary -> waiver",
+            ok,
+            f"waivers {before}->{after}, Total_Missed_Days={w['Total_Missed_Days__c'] if w else None}, "
+            f"Tier={w['Tier__c'] if w else None}, links={links}",
+        )
+    except Exception as e:
+        record("UC-14 tier boundary -> waiver", False, f"exception: {e}")
+
+    # ---------- UC-09: makeup link -> Make_Up_Pending ----------
+    md_id = None
+    ev3_id = None
+    try:
+        ev3 = sf.query(
+            "SELECT Id, Status__c FROM Closure_Event__c "
+            f"WHERE Source_Case__r.External_Id__c = 'E2E-UC03' AND School__c = '{school_ids[2]}' LIMIT 1"
+        )["records"]
+        if not ev3:
+            record("UC-09 makeup link -> Make_Up_Pending", False, "no school-3 event found")
+        else:
+            ev3_id = ev3[0]["Id"]
+            md_id = sf.Makeup_Day__c.create({
+                "Makeup_Date__c": "2026-04-04",
+                "Method__c": "Full Day",
+                "School__c": school_ids[2],
+                "Status__c": "Proposed",
+                "External_Id__c": "E2E-MD-UC09",
+            })["id"]
+            sf.Closure_Makeup_Link__c.create({
+                "Closure_Event__c": ev3_id,
+                "Makeup_Day__c": md_id,
+                "Hours_Covered__c": 6.5,
+            })
+            st = sf.Closure_Event__c.get(ev3_id)["Status__c"]
+            record("UC-09 makeup link -> Make_Up_Pending", st == "Make_Up_Pending", f"event status = {st}")
+    except Exception as e:
+        record("UC-09 makeup link -> Make_Up_Pending", False, f"exception: {e}")
+
+    # ---------- UC-11: makeup approved -> event Closed ----------
+    try:
+        if md_id and ev3_id:
+            sf.Makeup_Day__c.update(md_id, {"Status__c": "Approved"})
+            st = sf.Closure_Event__c.get(ev3_id)["Status__c"]
+            record("UC-11 makeup approved -> event Closed", st == "Closed", f"event status = {st}")
+        else:
+            record("UC-11 makeup approved -> event Closed", False, "UC-09 prerequisites missing")
+    except Exception as e:
+        record("UC-11 makeup approved -> event Closed", False, f"exception: {e}")
+
+    # ---------- UC-15/16: waiver submit -> Tier 2 approval ----------
+    try:
+        if not uc14_waiver_id:
+            record("UC-15/16 waiver submit -> routing", False, "no UC-14 waiver to submit")
+        else:
+            q = sf.query(
+                "SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'SCDE_Closures_Compliance' LIMIT 1"
+            )["records"]
+            queue_id = q[0]["Id"] if q else None
+            sf.Case.update(uc14_waiver_id, {"Waiver_Status__c": "Submitted"})
+            w = sf.Case.get(uc14_waiver_id)
+            procs = sf.query(
+                f"SELECT COUNT() FROM ProcessInstance WHERE TargetObjectId = '{uc14_waiver_id}'"
+            )["totalSize"]
+            ok = (w["OwnerId"] == queue_id) and procs >= 1
+            record(
+                "UC-15/16 waiver submit -> routing",
+                ok,
+                f"owner==queue: {w['OwnerId'] == queue_id}, approval processes: {procs}, Tier={w['Tier__c']}",
+            )
+    except Exception as e:
+        record("UC-15/16 waiver submit -> routing", False, f"exception: {e}")
 
     # ---------- summary ----------
     passed = sum(1 for _, p, _ in RESULTS if p)

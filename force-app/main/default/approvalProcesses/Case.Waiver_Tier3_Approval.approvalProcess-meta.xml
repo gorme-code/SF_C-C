@@ -5,6 +5,9 @@
     <allowedSubmitters>
         <type>owner</type>
     </allowedSubmitters>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>

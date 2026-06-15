@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>After-insert on Closure_Makeup_Link__c. Moves the linked Closure_Event to Make_Up_Pending (UC-09), unless it is already Closed or Cancelled.</description>
+    <environments>Default</environments>
+    <interviewLabel>Set Event Make Up Pending {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Set Event Make Up Pending</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Set_Event_Make_Up_Pending</name>
+        <label>Set Event Make Up Pending</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Closure_Event__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Cancelled</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Make_Up_Pending</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Closure_Event__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Event_Make_Up_Pending</targetReference>
+        </connector>
+        <object>Closure_Makeup_Link__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

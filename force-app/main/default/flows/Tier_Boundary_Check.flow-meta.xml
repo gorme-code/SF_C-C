@@ -130,7 +130,7 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
 )</expression>
     </formulas>
     <interviewLabel>Tier Boundary Check {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Tier Boundary Check</label>
+    <label>Tier Boundary Check (deprecated - logic moved to ExpandClosureSubmission Apex)</label>
     <loops>
         <name>Loop_Sum</name>
         <label>Sum Missed Hours</label>
@@ -405,7 +405,7 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>linkColl</name>
         <dataType>SObject</dataType>
