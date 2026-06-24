@@ -21,6 +21,13 @@
             </value>
         </assignmentItems>
         <assignmentItems>
+            <assignToReference>eventVar.Make_Up_Method__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Method__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
             <assignToReference>eventColl</assignToReference>
             <operator>Add</operator>
             <value>
@@ -55,6 +62,7 @@
         <label>Get Makeup Links</label>
         <locationX>176</locationX>
         <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Loop_Links</targetReference>
         </connector>
