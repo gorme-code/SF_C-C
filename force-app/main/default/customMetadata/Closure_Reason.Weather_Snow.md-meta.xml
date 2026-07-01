@@ -3,11 +3,11 @@
     <label>Weather Snow</label>
     <protected>false</protected>
     <values>
-        <field>Requires_Makeup_Default__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <field>Active__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
-        <field>Active__c</field>
+        <field>Requires_Makeup_Default__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
 </CustomMetadata>

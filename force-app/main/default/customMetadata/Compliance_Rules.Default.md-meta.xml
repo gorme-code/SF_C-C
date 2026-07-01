@@ -3,23 +3,23 @@
     <label>Default</label>
     <protected>false</protected>
     <values>
-        <field>Min_Instructional_Days_Per_Year__c</field>
-        <value xsi:type="xsd:double">180</value>
-    </values>
-    <values>
         <field>Hours_Per_Instructional_Day__c</field>
         <value xsi:type="xsd:double">6.5</value>
     </values>
     <values>
+        <field>Min_Instructional_Days_Per_Year__c</field>
+        <value xsi:type="xsd:double">180.0</value>
+    </values>
+    <values>
         <field>Tier2_Threshold__c</field>
-        <value xsi:type="xsd:double">3</value>
+        <value xsi:type="xsd:double">3.0</value>
     </values>
     <values>
         <field>Tier3_Threshold__c</field>
-        <value xsi:type="xsd:double">6</value>
+        <value xsi:type="xsd:double">6.0</value>
     </values>
     <values>
         <field>Tier4_Threshold__c</field>
-        <value xsi:type="xsd:double">9</value>
+        <value xsi:type="xsd:double">9.0</value>
     </values>
 </CustomMetadata>

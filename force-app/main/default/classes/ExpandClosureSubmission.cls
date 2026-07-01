@@ -1,7 +1,13 @@
 /**
  * Invoked by the Create_Closure_Events flow (after insert on a Closure_Submission Case).
- * Expands one submission into N Closure_Event__c rows (one per affected school per date),
+ * Expands one submission into N Closure_Event__c rows (one per affected school per date ENTRY),
  * skipping duplicates, acknowledges the Case, then performs the tier-boundary check.
+ *
+ * v1.3 per-date model: the submission carries a JSON array in Case.Closure_Date_Entries__c.
+ * Each entry is fully independent (its own date, type, reason, hours, make-up method, eLearning
+ * day number, scheduled make-up date). This replaces the old single-reason date-range model that
+ * read Closure_Start_Date__c / Closure_End_Date__c. Those legacy fields are retained on Case for
+ * existing records but are no longer read here.
  *
  * Tier-boundary handling lives here (not in the Tier_Boundary_Check flow) because events are
  * bulk-inserted: a per-record "previous total" flow can't detect a crossing when all rows
@@ -15,6 +21,17 @@ public with sharing class ExpandClosureSubmission {
     public class Request {
         @InvocableVariable(label='Case Id' required=true)
         public Id caseId;
+    }
+
+    /** One parsed element of the Closure_Date_Entries__c JSON array. */
+    private class DateEntry {
+        Date closureDate;
+        String closureType;
+        String closureReason;
+        Decimal hoursMissed;
+        String makeUpMethod;
+        Integer elearningDayNumber;
+        Date scheduledMakeupDate;
     }
 
     @InvocableMethod(label='Expand Closure Submission' description='Creates Closure_Event__c rows from a Closure Submission Case, acknowledges the Case, and auto-creates waiver cases on tier-boundary crossings.')
@@ -31,8 +48,8 @@ public with sharing class ExpandClosureSubmission {
 
         List<Case> cases = [
             SELECT Id, Submission_Scope__c, Submission_District__c, Affected_School_IDs__c,
-                   Closure_Start_Date__c, Closure_End_Date__c, Closure_Reason__c, Closure_Type__c,
-                   Hours_Missed_Per_Day__c, Reported_By_Contact__c, Submission_Status__c
+                   Closure_Date_Entries__c, Submission_Comments__c,
+                   Reported_By_Contact__c, Submission_Status__c
             FROM Case
             WHERE Id IN :caseIds
         ];
@@ -57,9 +74,9 @@ public with sharing class ExpandClosureSubmission {
             }
         }
 
-        // 1b/2. Resolve schools + build date lists per case
+        // 1b. Resolve schools + 2. parse date entries per case
         Map<Id, List<Id>> schoolsByCase = new Map<Id, List<Id>>();
-        Map<Id, List<Date>> datesByCase = new Map<Id, List<Date>>();
+        Map<Id, List<DateEntry>> entriesByCase = new Map<Id, List<DateEntry>>();
         Set<Id> allSchoolIds = new Set<Id>();
         Date minDate;
         Date maxDate;
@@ -71,6 +88,7 @@ public with sharing class ExpandClosureSubmission {
                     schoolIds.addAll(schoolsByDistrict.get(c.Submission_District__c));
                 }
             } else if (String.isNotBlank(c.Affected_School_IDs__c)) {
+                // Single_School (one id) and Multiple_Schools (comma list) both carry ids here
                 for (String part : c.Affected_School_IDs__c.split(',')) {
                     String token = part.trim();
                     if (String.isBlank(token)) {
@@ -86,23 +104,12 @@ public with sharing class ExpandClosureSubmission {
             schoolsByCase.put(c.Id, schoolIds);
             allSchoolIds.addAll(schoolIds);
 
-            List<Date> dates = new List<Date>();
-            if (c.Closure_Start_Date__c != null && c.Closure_End_Date__c != null) {
-                Date d = c.Closure_Start_Date__c;
-                Integer guard = 0;
-                while (d <= c.Closure_End_Date__c && guard < 1000) {
-                    dates.add(d);
-                    d = d.addDays(1);
-                    guard++;
-                }
-            } else if (c.Closure_Start_Date__c != null) {
-                dates.add(c.Closure_Start_Date__c);
-            }
-            datesByCase.put(c.Id, dates);
+            List<DateEntry> entries = parseEntries(c.Closure_Date_Entries__c);
+            entriesByCase.put(c.Id, entries);
 
-            for (Date dd : dates) {
-                if (minDate == null || dd < minDate) { minDate = dd; }
-                if (maxDate == null || dd > maxDate) { maxDate = dd; }
+            for (DateEntry de : entries) {
+                if (minDate == null || de.closureDate < minDate) { minDate = de.closureDate; }
+                if (maxDate == null || de.closureDate > maxDate) { maxDate = de.closureDate; }
             }
         }
 
@@ -118,34 +125,42 @@ public with sharing class ExpandClosureSubmission {
             }
         }
 
-        // 3b. Build new events (skip existing + intra-batch duplicates)
+        // 3b/4. Build new events for each (school x entry), skipping existing + intra-batch dups
         List<Closure_Event__c> toCreate = new List<Closure_Event__c>();
         Set<String> plannedKeys = new Set<String>();
         Datetime nowTs = Datetime.now();
         for (Case c : cases) {
             List<Id> schoolIds = schoolsByCase.get(c.Id);
-            List<Date> dates = datesByCase.get(c.Id);
-            if (schoolIds == null || dates == null) {
+            List<DateEntry> entries = entriesByCase.get(c.Id);
+            if (schoolIds == null || entries == null) {
                 continue;
             }
             for (Id sid : schoolIds) {
-                for (Date dt : dates) {
-                    String key = keyOf(sid, dt);
+                for (DateEntry de : entries) {
+                    String key = keyOf(sid, de.closureDate);
                     if (existingKeys.contains(key) || plannedKeys.contains(key)) {
                         continue;
                     }
                     plannedKeys.add(key);
-                    toCreate.add(new Closure_Event__c(
+                    Closure_Event__c ev = new Closure_Event__c(
                         School__c = sid,
                         Source_Case__c = c.Id,
-                        Closure_Date__c = dt,
-                        Closure_Reason__c = c.Closure_Reason__c,
-                        Closure_Type__c = c.Closure_Type__c,
-                        Hours_Missed__c = c.Hours_Missed_Per_Day__c,
+                        Closure_Date__c = de.closureDate,
+                        Closure_Reason__c = de.closureReason,
+                        Closure_Type__c = de.closureType,
+                        Hours_Missed__c = (de.hoursMissed != null ? de.hoursMissed : 6.5),
+                        Make_Up_Method__c = de.makeUpMethod,
+                        Scheduled_Makeup_Date__c = de.scheduledMakeupDate,
+                        Comments__c = c.Submission_Comments__c,
                         Reported_By__c = c.Reported_By_Contact__c,
                         Reported_Date__c = nowTs,
                         Status__c = 'Submitted'
-                    ));
+                    );
+                    if (de.elearningDayNumber != null) {
+                        // eLearning_Day_Number__c is a text picklist (values '1'..'5')
+                        ev.eLearning_Day_Number__c = String.valueOf(de.elearningDayNumber);
+                    }
+                    toCreate.add(ev);
                 }
             }
         }
@@ -154,7 +169,7 @@ public with sharing class ExpandClosureSubmission {
             insert toCreate; // Set_Make_Up_Required runs here and sets Make_Up_Required__c
         }
 
-        // 4. Acknowledge the cases
+        // 5. Acknowledge the cases
         List<Case> toUpdate = new List<Case>();
         for (Case c : cases) {
             toUpdate.add(new Case(Id = c.Id, Submission_Status__c = 'Acknowledged'));
@@ -163,8 +178,90 @@ public with sharing class ExpandClosureSubmission {
             update toUpdate;
         }
 
-        // 5. Tier-boundary check across all affected schools (bulk-safe, race-free)
+        // Tier-boundary check across all affected schools (bulk-safe, race-free)
         checkTierBoundaries(allSchoolIds);
+    }
+
+    /** Deserialize Closure_Date_Entries__c into typed entries; malformed/blank input yields []. */
+    private static List<DateEntry> parseEntries(String jsonStr) {
+        List<DateEntry> result = new List<DateEntry>();
+        if (String.isBlank(jsonStr)) {
+            return result;
+        }
+        Object parsed;
+        try {
+            parsed = JSON.deserializeUntyped(jsonStr);
+        } catch (Exception e) {
+            return result; // malformed JSON -> no entries (no events created)
+        }
+        if (!(parsed instanceof List<Object>)) {
+            return result;
+        }
+        for (Object o : (List<Object>) parsed) {
+            if (!(o instanceof Map<String, Object>)) {
+                continue;
+            }
+            Map<String, Object> m = (Map<String, Object>) o;
+            DateEntry de = new DateEntry();
+            de.closureDate = toDate(m.get('date'));
+            de.closureType = toStr(m.get('closure_type'));
+            de.closureReason = toStr(m.get('closure_reason'));
+            de.hoursMissed = toDecimal(m.get('hours_missed'));
+            de.makeUpMethod = toStr(m.get('make_up_method'));
+            de.elearningDayNumber = toInteger(m.get('elearning_day_number'));
+            de.scheduledMakeupDate = toDate(m.get('scheduled_makeup_date'));
+            if (de.closureDate != null) {
+                result.add(de); // an entry with no valid date cannot key an event
+            }
+        }
+        return result;
+    }
+
+    private static String toStr(Object o) {
+        if (o == null) {
+            return null;
+        }
+        String s = String.valueOf(o);
+        return String.isBlank(s) ? null : s;
+    }
+
+    private static Date toDate(Object o) {
+        if (o == null) {
+            return null;
+        }
+        String s = String.valueOf(o).trim();
+        if (String.isBlank(s)) {
+            return null;
+        }
+        try {
+            // handles 'yyyy-MM-dd' and ISO datetime like 'yyyy-MM-ddThh:mm:ss'
+            return Date.valueOf(s.length() >= 10 ? s.substring(0, 10) : s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static Decimal toDecimal(Object o) {
+        if (o == null) {
+            return null;
+        }
+        try {
+            return Decimal.valueOf(String.valueOf(o));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static Integer toInteger(Object o) {
+        if (o == null) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(String.valueOf(o));
+        } catch (Exception e) {
+            Decimal d = toDecimal(o); // tolerate "2.0"
+            return d == null ? null : d.intValue();
+        }
     }
 
     /**

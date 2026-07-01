@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Submission_Comments__c</fullName>
+    <description>Optional notes entered once per submission. Copied to Comments__c on each generated Closure_Event.</description>
+    <label>Submission Comments</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

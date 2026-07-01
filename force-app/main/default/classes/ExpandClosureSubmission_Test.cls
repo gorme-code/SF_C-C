@@ -17,8 +17,29 @@ private class ExpandClosureSubmission_Test {
         insert new Contact(LastName = 'Reporter', AccountId = dist.Id, Email = 'reporter@example.com');
     }
 
+    // ---- helpers -------------------------------------------------------------
+
+    private static String isoDate(Integer y, Integer m, Integer d) {
+        return y + '-' + (m < 10 ? '0' + m : '' + m) + '-' + (d < 10 ? '0' + d : '' + d);
+    }
+
+    /** Build one date-entry map; nulls are omitted so JSON matches the API's optional-field shape. */
+    private static Map<String, Object> entry(String dateStr, String type, String reason,
+            Decimal hours, String method, Integer elearn, String schedMakeup) {
+        Map<String, Object> e = new Map<String, Object>{
+            'date' => dateStr,
+            'closure_type' => type,
+            'closure_reason' => reason
+        };
+        if (hours != null)       { e.put('hours_missed', hours); }
+        if (method != null)      { e.put('make_up_method', method); }
+        if (elearn != null)      { e.put('elearning_day_number', elearn); }
+        if (schedMakeup != null) { e.put('scheduled_makeup_date', schedMakeup); }
+        return e;
+    }
+
     private static Id newSubmission(String scope, String affectedIds, Id districtId,
-            Date startDate, Date endDate, Id contactId) {
+            List<Map<String, Object>> entries, String comments, Id contactId) {
         Id subRt = Case.SObjectType.getDescribe()
             .getRecordTypeInfosByDeveloperName().get('Closure_Submission').getRecordTypeId();
         // Submission_Status = Returned so the Create_Closure_Events flow does NOT auto-fire;
@@ -30,11 +51,8 @@ private class ExpandClosureSubmission_Test {
             Submission_Scope__c = scope,
             Submission_District__c = districtId,
             Affected_School_IDs__c = affectedIds,
-            Closure_Start_Date__c = startDate,
-            Closure_End_Date__c = endDate,
-            Closure_Reason__c = 'Weather_Snow',
-            Closure_Type__c = 'Closed',
-            Hours_Missed_Per_Day__c = 6.5,
+            Closure_Date_Entries__c = JSON.serialize(entries),
+            Submission_Comments__c = comments,
             Reported_By_Contact__c = contactId
         );
         insert c;
@@ -47,45 +65,78 @@ private class ExpandClosureSubmission_Test {
         ExpandClosureSubmission.run(new List<ExpandClosureSubmission.Request>{ req });
     }
 
+    // ---- tests ---------------------------------------------------------------
+
+    // Step 7 Test 1 — single school, two entries with different types + per-entry fields.
     @isTest
-    static void testSingleSchoolExpansion() {
+    static void testSingleSchoolTwoEntries() {
         Account dist = [SELECT Id FROM Account WHERE Name = 'Test District' LIMIT 1];
         Account school = [SELECT Id FROM Account WHERE Name = 'Test School A' LIMIT 1];
         Contact ct = [SELECT Id FROM Contact WHERE LastName = 'Reporter' LIMIT 1];
 
+        List<Map<String, Object>> entries = new List<Map<String, Object>>{
+            // entry 1: Closed + Scheduled Weather Makeup Day + scheduled date
+            entry(isoDate(2026, 1, 5), 'Closed', 'Weather_Conditions', 6.5,
+                  'Scheduled Weather Makeup Day', null, isoDate(2026, 6, 1)),
+            // entry 2: Closed - eLearning + day number 2 (en-dash matches the picklist value)
+            entry(isoDate(2026, 1, 6), 'Closed – eLearning', 'Weather_Conditions', 6.5,
+                  null, 2, null)
+        };
+
         Id caseId = newSubmission('Single_School', String.valueOf(school.Id), dist.Id,
-            Date.newInstance(2026, 1, 5), Date.newInstance(2026, 1, 5), ct.Id);
+            entries, 'Two-day closure note', ct.Id);
 
         Test.startTest();
         runFor(caseId);
         Test.stopTest();
 
-        List<Closure_Event__c> evs = [
-            SELECT Id, District__c, School__c, Status__c FROM Closure_Event__c WHERE Source_Case__c = :caseId
-        ];
-        System.assertEquals(1, evs.size(), 'one event for single school / single day');
-        System.assertEquals(dist.Id, evs[0].District__c, 'District auto-populated from school parent');
-        System.assertEquals(school.Id, evs[0].School__c, 'school set');
+        Map<Date, Closure_Event__c> byDate = new Map<Date, Closure_Event__c>();
+        for (Closure_Event__c ev : [
+            SELECT Closure_Date__c, Closure_Type__c, Make_Up_Method__c, Scheduled_Makeup_Date__c,
+                   eLearning_Day_Number__c, Comments__c, Status__c, Hours_Missed__c
+            FROM Closure_Event__c WHERE Source_Case__c = :caseId
+        ]) {
+            byDate.put(ev.Closure_Date__c, ev);
+        }
+        System.assertEquals(2, byDate.size(), 'two events, one per date entry');
+
+        Closure_Event__c e1 = byDate.get(Date.newInstance(2026, 1, 5));
+        System.assertEquals('Scheduled Weather Makeup Day', e1.Make_Up_Method__c, 'method carried');
+        System.assertEquals(Date.newInstance(2026, 6, 1), e1.Scheduled_Makeup_Date__c, 'scheduled makeup date carried');
+        System.assertEquals(null, e1.eLearning_Day_Number__c, 'no eLearning number on the scheduled-makeup entry');
+        System.assertEquals('Two-day closure note', e1.Comments__c, 'submission comments copied to event');
+        System.assertEquals('Submitted', e1.Status__c, 'status Submitted');
+
+        Closure_Event__c e2 = byDate.get(Date.newInstance(2026, 1, 6));
+        System.assertEquals('Closed – eLearning', e2.Closure_Type__c, 'eLearning type carried');
+        System.assertEquals('2', e2.eLearning_Day_Number__c, 'eLearning day number carried as text');
+        System.assertEquals(null, e2.Make_Up_Method__c, 'no make-up method on the eLearning entry');
+
         System.assertEquals('Acknowledged',
             [SELECT Submission_Status__c FROM Case WHERE Id = :caseId].Submission_Status__c,
             'Case acknowledged');
     }
 
+    // Step 7 Test 2 — District_Wide, per-school expansion + tier-boundary waiver creation.
     @isTest
     static void testDistrictWideExpansionAndTier() {
         Account dist = [SELECT Id FROM Account WHERE Name = 'Test District' LIMIT 1];
         Contact ct = [SELECT Id FROM Contact WHERE LastName = 'Reporter' LIMIT 1];
 
-        // District-wide, 4-day range -> 2 schools x 4 days = 8 events; each school exceeds Tier 2
-        Id caseId = newSubmission('District_Wide', null, dist.Id,
-            Date.newInstance(2026, 2, 2), Date.newInstance(2026, 2, 5), ct.Id);
+        // 4 date entries, district-wide (2 schools) -> 2 x 4 = 8 events; each school crosses Tier 2
+        List<Map<String, Object>> entries = new List<Map<String, Object>>();
+        for (Integer d = 2; d <= 5; d++) {
+            entries.add(entry(isoDate(2026, 2, d), 'Closed', 'Weather_Conditions', 6.5, null, null, null));
+        }
+
+        Id caseId = newSubmission('District_Wide', null, dist.Id, entries, null, ct.Id);
 
         Test.startTest();
         runFor(caseId);
         Test.stopTest();
 
-        Integer eventCount = [SELECT COUNT() FROM Closure_Event__c WHERE Source_Case__c = :caseId];
-        System.assertEquals(8, eventCount, '2 schools x 4 dates');
+        System.assertEquals(8, [SELECT COUNT() FROM Closure_Event__c WHERE Source_Case__c = :caseId],
+            '2 schools x 4 date entries');
 
         List<Case> waivers = [
             SELECT Id, Waiver_Status__c, Total_Missed_Days__c, Tier__c
@@ -102,6 +153,7 @@ private class ExpandClosureSubmission_Test {
             'events stamped with their waiver case');
     }
 
+    // Step 7 Test 3 — multiple-schools parse + duplicate (school x date) skip on re-submit.
     @isTest
     static void testMultipleSchoolsAndDuplicateSkip() {
         Account dist = [SELECT Id FROM Account WHERE Name = 'Test District' LIMIT 1];
@@ -110,16 +162,20 @@ private class ExpandClosureSubmission_Test {
         Contact ct = [SELECT Id FROM Contact WHERE LastName = 'Reporter' LIMIT 1];
 
         Test.startTest();
-        // Multiple schools, single date -> 2 events
+        // Multiple schools, single date entry -> 2 events
         Id case1 = newSubmission('Multiple_Schools', a.Id + ',' + b.Id, dist.Id,
-            Date.newInstance(2026, 3, 2), Date.newInstance(2026, 3, 2), ct.Id);
+            new List<Map<String, Object>>{
+                entry(isoDate(2026, 3, 2), 'Closed', 'Road_Conditions', 6.5, null, null, null)
+            }, null, ct.Id);
         runFor(case1);
         System.assertEquals(2, [SELECT COUNT() FROM Closure_Event__c WHERE Source_Case__c = :case1],
             'two schools parsed from comma list');
 
         // Re-submit the same school/date -> duplicate skipped
         Id case2 = newSubmission('Single_School', String.valueOf(a.Id), dist.Id,
-            Date.newInstance(2026, 3, 2), Date.newInstance(2026, 3, 2), ct.Id);
+            new List<Map<String, Object>>{
+                entry(isoDate(2026, 3, 2), 'Closed', 'Road_Conditions', 6.5, null, null, null)
+            }, null, ct.Id);
         runFor(case2);
         Test.stopTest();
 
@@ -129,5 +185,26 @@ private class ExpandClosureSubmission_Test {
             [SELECT COUNT() FROM Closure_Event__c
              WHERE School__c = :a.Id AND Closure_Date__c = 2026-03-02],
             'still exactly one event for that school/date');
+    }
+
+    // Guard — malformed/empty JSON must not create events but must still acknowledge the Case.
+    @isTest
+    static void testEmptyEntriesAcknowledgesCase() {
+        Account dist = [SELECT Id FROM Account WHERE Name = 'Test District' LIMIT 1];
+        Account school = [SELECT Id FROM Account WHERE Name = 'Test School A' LIMIT 1];
+        Contact ct = [SELECT Id FROM Contact WHERE LastName = 'Reporter' LIMIT 1];
+
+        Id caseId = newSubmission('Single_School', String.valueOf(school.Id), dist.Id,
+            new List<Map<String, Object>>(), null, ct.Id);
+
+        Test.startTest();
+        runFor(caseId);
+        Test.stopTest();
+
+        System.assertEquals(0, [SELECT COUNT() FROM Closure_Event__c WHERE Source_Case__c = :caseId],
+            'no entries -> no events');
+        System.assertEquals('Acknowledged',
+            [SELECT Submission_Status__c FROM Case WHERE Id = :caseId].Submission_Status__c,
+            'Case still acknowledged even with no entries');
     }
 }

@@ -80,7 +80,7 @@
         <locationX>308</locationX>
         <locationY>248</locationY>
         <defaultConnector>
-            <targetReference>Get_Reason</targetReference>
+            <targetReference>Check_Delayed_Dismissal</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not eLearning</defaultConnectorLabel>
         <rules>
@@ -97,6 +97,63 @@
                 <targetReference>Set_Makeup_False</targetReference>
             </connector>
             <label>Is eLearning</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Delayed_Dismissal</name>
+        <label>Delayed or Early Dismissal?</label>
+        <locationX>176</locationX>
+        <locationY>362</locationY>
+        <defaultConnector>
+            <targetReference>Check_Method</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Neither</defaultConnectorLabel>
+        <rules>
+            <name>Is_Delayed_Or_Dismissal</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Closure_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Delayed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Closure_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Early Dismissal</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Makeup_False</targetReference>
+            </connector>
+            <label>Is Delayed or Dismissal</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Method</name>
+        <label>Make Up Method Declared?</label>
+        <locationX>176</locationX>
+        <locationY>476</locationY>
+        <defaultConnector>
+            <targetReference>Get_Reason</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Method</defaultConnectorLabel>
+        <rules>
+            <name>Method_Declared</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Make_Up_Method__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Makeup_False</targetReference>
+            </connector>
+            <label>Method Declared</label>
         </rules>
     </decisions>
     <decisions>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closure_Date_Entries__c</fullName>
+    <description>Serialized JSON list of per-date closure objects from the submission form. Parsed by Create_Closure_Events (Flow 1) to create one Closure_Event per (school x date entry).</description>
+    <label>Closure Date Entries</label>
+    <length>131072</length>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>
