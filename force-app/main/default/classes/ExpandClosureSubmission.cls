@@ -202,16 +202,32 @@ public with sharing class ExpandClosureSubmission {
                 continue;
             }
             Map<String, Object> m = (Map<String, Object>) o;
-            DateEntry de = new DateEntry();
-            de.closureDate = toDate(m.get('date'));
-            de.closureType = toStr(m.get('closure_type'));
-            de.closureReason = toStr(m.get('closure_reason'));
-            de.hoursMissed = toDecimal(m.get('hours_missed'));
-            de.makeUpMethod = toStr(m.get('make_up_method'));
-            de.elearningDayNumber = toInteger(m.get('elearning_day_number'));
-            de.scheduledMakeupDate = toDate(m.get('scheduled_makeup_date'));
-            if (de.closureDate != null) {
-                result.add(de); // an entry with no valid date cannot key an event
+            Date startDate = toDate(m.get('date'));
+            if (startDate == null) {
+                continue; // an entry with no valid date cannot key an event
+            }
+            Date endDate = toDate(m.get('closure_end_date'));
+            Date rangeEnd = (endDate != null && endDate >= startDate) ? endDate : startDate;
+            // Shared fields across every day in the range
+            String closureType    = toStr(m.get('closure_type'));
+            String closureReason  = toStr(m.get('closure_reason'));
+            Decimal hoursMissed   = toDecimal(m.get('hours_missed'));
+            String makeUpMethod   = toStr(m.get('make_up_method'));
+            Integer elearningDay  = toInteger(m.get('elearning_day_number'));
+            Date schedMakeup      = toDate(m.get('scheduled_makeup_date'));
+            // Expand: one DateEntry per calendar day from startDate to rangeEnd (inclusive)
+            Date current = startDate;
+            while (current <= rangeEnd) {
+                DateEntry de = new DateEntry();
+                de.closureDate         = current;
+                de.closureType         = closureType;
+                de.closureReason       = closureReason;
+                de.hoursMissed         = hoursMissed;
+                de.makeUpMethod        = makeUpMethod;
+                de.elearningDayNumber  = elearningDay;
+                de.scheduledMakeupDate = schedMakeup;
+                result.add(de);
+                current = current.addDays(1);
             }
         }
         return result;

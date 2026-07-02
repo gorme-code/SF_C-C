@@ -38,6 +38,14 @@ private class ExpandClosureSubmission_Test {
         return e;
     }
 
+    /** Overload that also sets closure_end_date for multi-day range entries. */
+    private static Map<String, Object> entry(String dateStr, String endDateStr, String type,
+            String reason, Decimal hours, String method) {
+        Map<String, Object> e = entry(dateStr, type, reason, hours, method, null, null);
+        e.put('closure_end_date', endDateStr);
+        return e;
+    }
+
     private static Id newSubmission(String scope, String affectedIds, Id districtId,
             List<Map<String, Object>> entries, String comments, Id contactId) {
         Id subRt = Case.SObjectType.getDescribe()
@@ -185,6 +193,39 @@ private class ExpandClosureSubmission_Test {
             [SELECT COUNT() FROM Closure_Event__c
              WHERE School__c = :a.Id AND Closure_Date__c = 2026-03-02],
             'still exactly one event for that school/date');
+    }
+
+    // Date range expansion — one entry with closure_end_date should create one event per day.
+    @isTest
+    static void testDateRangeExpansion() {
+        Account dist   = [SELECT Id FROM Account WHERE Name = 'Test District' LIMIT 1];
+        Account school = [SELECT Id FROM Account WHERE Name = 'Test School A' LIMIT 1];
+        Contact ct     = [SELECT Id FROM Contact WHERE LastName = 'Reporter' LIMIT 1];
+
+        // 07/03 – 07/10 inclusive = 8 days, 1 school → 8 events
+        List<Map<String, Object>> entries = new List<Map<String, Object>>{
+            entry(isoDate(2026, 7, 3), isoDate(2026, 7, 10), 'Closed', 'Weather_Conditions', 6.5, null)
+        };
+        Id caseId = newSubmission('Single_School', String.valueOf(school.Id), dist.Id,
+            entries, null, ct.Id);
+
+        Test.startTest();
+        runFor(caseId);
+        Test.stopTest();
+
+        List<Closure_Event__c> events = [
+            SELECT Closure_Date__c, Closure_Type__c, Closure_Reason__c, Hours_Missed__c
+            FROM Closure_Event__c WHERE Source_Case__c = :caseId
+            ORDER BY Closure_Date__c
+        ];
+        System.assertEquals(8, events.size(), '8 days in range → 8 events');
+        System.assertEquals(Date.newInstance(2026, 7, 3),  events[0].Closure_Date__c, 'first day');
+        System.assertEquals(Date.newInstance(2026, 7, 10), events[7].Closure_Date__c, 'last day');
+        for (Closure_Event__c ev : events) {
+            System.assertEquals('Closed',             ev.Closure_Type__c,   'type copied to every day');
+            System.assertEquals('Weather_Conditions', ev.Closure_Reason__c, 'reason copied to every day');
+            System.assertEquals(6.5,                  ev.Hours_Missed__c,   'hours copied to every day');
+        }
     }
 
     // Guard — malformed/empty JSON must not create events but must still acknowledge the Case.
