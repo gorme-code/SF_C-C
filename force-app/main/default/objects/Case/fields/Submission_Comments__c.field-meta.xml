@@ -4,6 +4,9 @@
     <description>Optional notes entered once per submission. Copied to Comments__c on each generated Closure_Event.</description>
     <label>Submission Comments</label>
     <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
     <visibleLines>5</visibleLines>
 </CustomField>

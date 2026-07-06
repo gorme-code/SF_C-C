@@ -26,6 +26,7 @@
                 <stringValue>A school closure has pushed your district across a waiver tier boundary. A Waiver Case has been automatically created in Draft status. Please log in to Member Center to review and complete the waiver request.</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
     <assignments>
@@ -132,25 +133,11 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
     <formulas>
         <name>fx_totalMissedDays</name>
         <dataType>Number</dataType>
-        <scale>1</scale>
         <expression>{!var_totalHours} / {!Get_Rules.Hours_Per_Instructional_Day__c}</expression>
+        <scale>1</scale>
     </formulas>
     <interviewLabel>Tier Boundary Check {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Tier Boundary Check (deprecated - logic moved to ExpandClosureSubmission Apex)</label>
-    <loops>
-        <name>Loop_Sum</name>
-        <label>Sum Missed Hours</label>
-        <locationX>176</locationX>
-        <locationY>350</locationY>
-        <collectionReference>Get_Sum_Events</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Add_Hours</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Check_Crossed</targetReference>
-        </noMoreValuesConnector>
-    </loops>
     <loops>
         <name>Loop_Links</name>
         <label>Loop Make-Up Events</label>
@@ -163,6 +150,20 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>Create_Links</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>Loop_Sum</name>
+        <label>Sum Missed Hours</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <collectionReference>Get_Sum_Events</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Add_Hours</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Check_Crossed</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processType>AutoLaunchedFlow</processType>
@@ -185,9 +186,15 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
             <targetReference>Get_Link_Events</targetReference>
         </connector>
         <inputAssignments>
-            <field>RecordTypeId</field>
+            <field>Days_Already_Made_Up__c</field>
             <value>
-                <elementReference>Get_RT.Id</elementReference>
+                <numberValue>0.0</numberValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Days_Requested_For_Waiver__c</field>
+            <value>
+                <elementReference>fx_totalMissedDays</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -197,15 +204,9 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Waiver_District__c</field>
+            <field>RecordTypeId</field>
             <value>
-                <elementReference>$Record.District__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Waiver_Status__c</field>
-            <value>
-                <stringValue>Draft</stringValue>
+                <elementReference>Get_RT.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -221,25 +222,138 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Days_Already_Made_Up__c</field>
+            <field>Waiver_District__c</field>
             <value>
-                <numberValue>0.0</numberValue>
+                <elementReference>$Record.District__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>Days_Requested_For_Waiver__c</field>
+            <field>Waiver_Status__c</field>
             <value>
-                <elementReference>fx_totalMissedDays</elementReference>
+                <stringValue>Draft</stringValue>
             </value>
         </inputAssignments>
         <object>Case</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
+        <name>Get_Contact</name>
+        <label>Get Reporting Contact</label>
+        <locationX>176</locationX>
+        <locationY>1622</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Email</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Reported_By__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Link_Events</name>
+        <label>Get Make-Up Events</label>
+        <locationX>176</locationX>
+        <locationY>1174</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_Links</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>School__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.School__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>School_Year__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.School_Year__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Make_Up_Required__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Closure_Event__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Queue</name>
+        <label>Get SCDE Closures Compliance Queue</label>
+        <locationX>176</locationX>
+        <locationY>936</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Create_Waiver_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>SCDE_Closures_Compliance</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_RT</name>
+        <label>Get Waiver RecordType</label>
+        <locationX>176</locationX>
+        <locationY>818</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Queue</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Case</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Closure_Waiver_Request</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Rules</name>
         <label>Get Compliance Rules Default</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Sum_Events</targetReference>
         </connector>
@@ -260,6 +374,7 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
         <label>Get Qualifying Events</label>
         <locationX>176</locationX>
         <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Loop_Sum</targetReference>
         </connector>
@@ -296,114 +411,6 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
         <object>Closure_Event__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>Get_RT</name>
-        <label>Get Waiver RecordType</label>
-        <locationX>176</locationX>
-        <locationY>818</locationY>
-        <connector>
-            <targetReference>Get_Queue</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>SobjectType</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Case</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Closure_Waiver_Request</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>RecordType</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Queue</name>
-        <label>Get SCDE Closures Compliance Queue</label>
-        <locationX>176</locationX>
-        <locationY>936</locationY>
-        <connector>
-            <targetReference>Create_Waiver_Case</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Type</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Queue</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>SCDE_Closures_Compliance</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Group</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Link_Events</name>
-        <label>Get Make-Up Events</label>
-        <locationX>176</locationX>
-        <locationY>1174</locationY>
-        <connector>
-            <targetReference>Loop_Links</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>School__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.School__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>School_Year__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.School_Year__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Make_Up_Required__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Closure_Event__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Contact</name>
-        <label>Get Reporting Contact</label>
-        <locationX>176</locationX>
-        <locationY>1622</locationY>
-        <connector>
-            <targetReference>Check_Email</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Reported_By__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Contact</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <start>
         <locationX>176</locationX>
         <locationY>0</locationY>
@@ -429,7 +436,7 @@ AND( ({!var_totalHours} - {!$Record.Hours_Missed__c}) / {!Get_Rules.Hours_Per_In
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>linkColl</name>
         <dataType>SObject</dataType>

@@ -4,6 +4,7 @@
     <description>Only set when this record represents a waiver decision, not an actual makeup day.</description>
     <label>Waiver Type</label>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>

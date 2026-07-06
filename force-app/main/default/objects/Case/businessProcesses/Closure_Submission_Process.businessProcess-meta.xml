@@ -4,15 +4,7 @@
     <description>Support process for the Closure Submission Case record type.</description>
     <isActive>true</isActive>
     <values>
-        <fullName>New</fullName>
-        <default>true</default>
-    </values>
-    <values>
-        <fullName>In Progress</fullName>
-        <default>false</default>
-    </values>
-    <values>
-        <fullName>Escalated</fullName>
+        <fullName>Closed</fullName>
         <default>false</default>
     </values>
     <values>
@@ -20,11 +12,19 @@
         <default>false</default>
     </values>
     <values>
-        <fullName>On Hold</fullName>
+        <fullName>Escalated</fullName>
         <default>false</default>
     </values>
     <values>
-        <fullName>Closed</fullName>
+        <fullName>In Progress</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>New</fullName>
+        <default>true</default>
+    </values>
+    <values>
+        <fullName>On Hold</fullName>
         <default>false</default>
     </values>
 </BusinessProcess>

@@ -8,5 +8,6 @@
     <relationshipLabel>Makeup Days (School)</relationshipLabel>
     <relationshipName>School</relationshipName>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

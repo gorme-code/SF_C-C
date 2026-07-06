@@ -5,4 +5,500 @@
     <businessProcess>Closure_Waiver_Process</businessProcess>
     <description>Waiver workflow with statutory tier routing. Long-lived; references closures by Tier via Waiver_Closure_Link__c.</description>
     <label>Closure Waiver Request</label>
+    <picklistValues>
+        <picklist>CISO_Control__c</picklist>
+        <values>
+            <fullName>Access Control Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Account Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Application Software Security</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Audit Log Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Continuous Vulnerability Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Data Protection</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Data Recovery</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Email and Web Browser Protections</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Incident Response Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inventory and Control of Enterprise</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inventory and Control of Software Assets</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Malware Defenses</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Network Infrastructure Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Network Monitoring and Defense</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Penetration Testing</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Secure Configuration of Enterprise Assets and Software</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Security Awareness and Skills Training</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Service Provider Management</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Closure_Type__c</picklist>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Closed %E2%80%93 eLearning</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Delayed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Early Dismissal</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Completion_Type__c</picklist>
+        <values>
+            <fullName>No Action Required</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outside%2FReferred outside of SCDE Responsibility</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Resolved with Contact</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Media_to_Attend__c</picklist>
+        <values>
+            <fullName>--None--</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No%2C media will not attend</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes%2C media to attend</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Open_to_Public__c</picklist>
+        <values>
+            <fullName>No%2C not open to public</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes%2C open to public</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Origin</picklist>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Person</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Letter</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Phone</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Social</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Web</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Priority</picklist>
+        <values>
+            <fullName>Critical</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Low</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medium</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Program_Area__c</picklist>
+        <values>
+            <fullName>Compliance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prevention</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Response</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Training</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Reason</picklist>
+        <values>
+            <fullName>Complex functionality</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Existing problem</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Instructions not clear</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New problem</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>User didn%27t attend training</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Related_Case_Reasons__c</picklist>
+        <values>
+            <fullName>Attendance rules</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Attendance%2FParticipation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Bullying %2F Violence in schools</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Charter school</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Contact information</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Current topic of interest</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Data Collection Governance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Data request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Dislike of in-district transfer fee</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Education Scholarship Trust Fund %28ESTF%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>GED or high school diploma or transcript info</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Higher education</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Home school</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Legal compliance request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Meeting request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non-education inquiry</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Nursing %2F Health questions</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Nutrition %2F Food programs</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ombudsman complaint</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other %28add information%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Parent concern</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Policy information request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Product%2FService Inquiry</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Product%2FService Support</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Public comment request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Request for interview</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Self-Assessment Governance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Speaking request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Special needs %28IEPs and 504s%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Teacher %2F Educator issue</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Transportation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VirtualSC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Workshops%2FRoadshows</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Resolution_Description__c</picklist>
+        <values>
+            <fullName>Accept Invitation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Accept with Proxy Designee</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Decline Invitation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Duplicate</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No response from constituent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outside of SCDE responsibility</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Referred</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Resolved with constituent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Response not required</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Spam %2F Unsolicited Message</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Role_of_Ellen_Weaver_at_the_event__c</picklist>
+        <values>
+            <fullName>Brief Remarks%2FGreetings</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Featured Speaker%2FKeynote</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Recognized Guest</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Submission_Scope__c</picklist>
+        <values>
+            <fullName>District_Wide</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Multiple_Schools</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Single_School</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Submission_Status__c</picklist>
+        <values>
+            <fullName>Acknowledged</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Returned</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Submitted</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Event Request</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>General Inquiry</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Media Inquiry</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Waiver_Status__c</picklist>
+        <values>
+            <fullName>Draft</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Local_Board_Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Logged</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Returned</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>State_Board_Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Submitted</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Withdrawn</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>

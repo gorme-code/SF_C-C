@@ -4,6 +4,9 @@
     <description>Serialized JSON list of per-date closure objects from the submission form. Parsed by Create_Closure_Events (Flow 1) to create one Closure_Event per (school x date entry).</description>
     <label>Closure Date Entries</label>
     <length>131072</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
     <visibleLines>10</visibleLines>
 </CustomField>

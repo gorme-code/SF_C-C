@@ -4,5 +4,8 @@
     <description>Inclusive start date of the closure range.</description>
     <label>Closure Start Date</label>
     <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Date</type>
 </CustomField>

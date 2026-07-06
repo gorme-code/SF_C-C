@@ -3,10 +3,14 @@
     <fullName>Hours_Missed_Per_Day__c</fullName>
     <defaultValue>6.5</defaultValue>
     <description>Seeds Hours_Missed__c on each generated Closure_Event.</description>
+    <externalId>false</externalId>
     <label>Hours Missed Per Day</label>
     <precision>4</precision>
     <required>false</required>
     <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>

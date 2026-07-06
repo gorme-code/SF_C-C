@@ -3,5 +3,6 @@
     <fullName>Makeup_Date__c</fullName>
     <label>Makeup Date</label>
     <required>true</required>
+    <trackTrending>false</trackTrending>
     <type>Date</type>
 </CustomField>

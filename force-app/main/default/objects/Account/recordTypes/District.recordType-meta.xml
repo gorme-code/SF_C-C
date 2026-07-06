@@ -2,6 +2,960 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>District</fullName>
     <active>true</active>
-    <description>School district. Parent Account of School-record-type Accounts. Referenced by Closure_Event__c.District__c and by flows/sharing rules that filter RecordType.DeveloperName = 'District'.</description>
+    <description>School district. Parent Account of School-record-type Accounts. Referenced by Closure_Event__c.District__c and by flows/sharing rules that filter RecordType.DeveloperName = &apos;District&apos;.</description>
     <label>District</label>
+    <picklistValues>
+        <picklist>Academic_Achievement_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Academic_Achievement_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>AccountSource</picklist>
+        <values>
+            <fullName>Advertisement</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Customer Event</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Employee Referral</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Google AdWords</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Purchased List</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Trade Show</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Webinar</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Website</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Chamber__c</picklist>
+        <values>
+            <fullName>House</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Senate</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>College_and_Career_Readiness_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>College_and_Career_Readiness_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Grade_Levels__c</picklist>
+        <values>
+            <fullName>01</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>04</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>09</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Adult Ed%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>K</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>P3</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>P4</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PK</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Special Ed%2E</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Graduation_Rate_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Graduation_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>High_School_Student_Success_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>High_School_Student_Success_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Industry</picklist>
+        <values>
+            <fullName>Agriculture</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Apparel</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Banking</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Biotechnology</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Chemicals</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Communications</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Construction</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Consulting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Education</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Electronics</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Energy</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Engineering</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Entertainment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Environmental</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Finance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Food %26 Beverage</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Government</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Healthcare</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hospitality</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Insurance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Machinery</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manufacturing</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Media</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not For Profit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Recreation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Retail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Shipping</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technology</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Telecommunications</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Transportation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Utilities</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Multilingual_Learners_Progress_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Multilingual_Learners_Progress_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Organization_Type__c</picklist>
+        <values>
+            <fullName>Department</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Independent School</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Office</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Public School District</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>School</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Team</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Overall_Rating_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Overall_School_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Ownership</picklist>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Private</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Public</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Subsidiary</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Prepare_for_Success_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Prepare_for_Success_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Rating</picklist>
+        <values>
+            <fullName>Cold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hot</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Warm</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SCDE_Team__c</picklist>
+        <values>
+            <fullName>AOD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Admin</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>DTSS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Finance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>IT</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Management</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>School_Climate_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>School_Climate_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>School_Format__c</picklist>
+        <values>
+            <fullName>In-person%2C located in South Carolina</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Online</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>School_Model__c</picklist>
+        <values>
+            <fullName>Career and Tech</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Charter</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Independent %2F Private</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Traditional</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>School_Type__c</picklist>
+        <values>
+            <fullName>Academy</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Adult Education</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CATE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Charter</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Elementary</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Elementary %2F Middle</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>K-12</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Middle</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Middle %2F High</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Student_Progress_Rank__c</picklist>
+        <values>
+            <fullName>1%2E Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2E Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6%2E Not Rated</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Student_Progress_Rating__c</picklist>
+        <values>
+            <fullName>Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Below Average</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Excellent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Good</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Rated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unsatisfactory</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Analyst</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Competitor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Customer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Integrator</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Investor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Press</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prospect</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reseller</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>

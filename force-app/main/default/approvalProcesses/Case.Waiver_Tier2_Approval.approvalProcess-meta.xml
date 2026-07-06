@@ -3,11 +3,16 @@
     <active>true</active>
     <allowRecall>true</allowRecall>
     <allowedSubmitters>
-        <type>owner</type>
-    </allowedSubmitters>
-    <allowedSubmitters>
         <type>creator</type>
     </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>CaseNumber</field>
+        <field>Owner</field>
+        <field>CreatedDate</field>
+    </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
@@ -19,13 +24,10 @@
         </assignedApprover>
         <label>Local Board Review</label>
         <name>Local_Board_Review</name>
-        <rejectBehavior>
-            <type>RejectRequest</type>
-        </rejectBehavior>
     </approvalStep>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
-        <formula>AND(RecordType.DeveloperName = "Closure_Waiver_Request", Tier__c = "Tier 2", ISPICKVAL(Waiver_Status__c, "Submitted"))</formula>
+        <formula>AND(RecordType.DeveloperName = &quot;Closure_Waiver_Request&quot;, Tier__c = &quot;Tier 2&quot;, ISPICKVAL(Waiver_Status__c, &quot;Submitted&quot;))</formula>
     </entryCriteria>
     <finalApprovalActions>
         <action>

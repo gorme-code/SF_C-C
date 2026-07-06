@@ -3,6 +3,9 @@
     <fullName>Submission_Scope__c</fullName>
     <label>Submission Scope</label>
     <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>

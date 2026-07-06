@@ -5,5 +5,6 @@
     <description>Set by the Set_Make_Up_Required flow / Apex trigger. True unless reason is eLearning, non-instructional day, or the school year already meets minimum days.</description>
     <label>Make Up Required</label>
     <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

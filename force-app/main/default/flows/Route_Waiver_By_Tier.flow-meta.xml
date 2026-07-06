@@ -26,6 +26,7 @@
                 <stringValue>A Tier 4 (General Assembly) waiver has been logged. This is informational only — no approval process is required.</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
     </actionCalls>
     <actionCalls>
         <name>Submit_Tier2</name>
@@ -47,6 +48,7 @@
                 <stringValue>Waiver_Tier2_Approval</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>submit</nameSegment>
     </actionCalls>
     <actionCalls>
         <name>Submit_Tier3</name>
@@ -68,6 +70,7 @@
                 <stringValue>Waiver_Tier3_Approval</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>submit</nameSegment>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
     <decisions>
@@ -135,6 +138,7 @@
         <label>Get SCDE Closures Compliance Queue</label>
         <locationX>176</locationX>
         <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Route_By_Tier</targetReference>
         </connector>
@@ -157,33 +161,6 @@
         <object>Group</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordUpdates>
-        <name>Update_Tier1</name>
-        <label>Return Tier 1</label>
-        <locationX>50</locationX>
-        <locationY>530</locationY>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>Waiver_Status__c</field>
-            <value>
-                <stringValue>Returned</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>SCDE_Notes__c</field>
-            <value>
-                <stringValue>Tier 1 waivers are not required.</stringValue>
-            </value>
-        </inputAssignments>
-        <object>Case</object>
-    </recordUpdates>
     <recordUpdates>
         <name>Set_Owner_Tier2</name>
         <label>Set Owner Tier 2</label>
@@ -233,6 +210,33 @@
         <object>Case</object>
     </recordUpdates>
     <recordUpdates>
+        <name>Update_Tier1</name>
+        <label>Return Tier 1</label>
+        <locationX>50</locationX>
+        <locationY>530</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>SCDE_Notes__c</field>
+            <value>
+                <stringValue>Tier 1 waivers are not required.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Waiver_Status__c</field>
+            <value>
+                <stringValue>Returned</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>Update_Tier4</name>
         <label>Log Tier 4</label>
         <locationX>578</locationX>
@@ -269,7 +273,7 @@
             <targetReference>Get_Queue</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterFormula>AND({!$Record.RecordType.DeveloperName} = "Closure_Waiver_Request", TEXT({!$Record.Waiver_Status__c}) = "Submitted")</filterFormula>
+        <filterFormula>AND({!$Record.RecordType.DeveloperName} = &quot;Closure_Waiver_Request&quot;, TEXT({!$Record.Waiver_Status__c}) = &quot;Submitted&quot;)</filterFormula>
         <object>Case</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>

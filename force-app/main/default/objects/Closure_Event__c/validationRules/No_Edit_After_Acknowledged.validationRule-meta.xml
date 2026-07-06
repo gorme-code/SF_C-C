@@ -3,6 +3,6 @@
     <fullName>No_Edit_After_Acknowledged</fullName>
     <active>true</active>
     <description>Blocks edits once Status = Acknowledged unless the user holds the Calendar_Closures_SCDE_Reviewer permission set.</description>
-    <errorConditionFormula>ISPICKVAL(Status__c, 'Acknowledged') &amp;&amp; NOT($Permission.Calendar_Closures_SCDE_Reviewer)</errorConditionFormula>
+    <errorConditionFormula>ISPICKVAL(Status__c, &apos;Acknowledged&apos;) &amp;&amp; NOT($Permission.Calendar_Closures_SCDE_Reviewer)</errorConditionFormula>
     <errorMessage>This record cannot be edited after it has been acknowledged. Contact SCDE to request an amendment.</errorMessage>
 </ValidationRule>

@@ -3,11 +3,16 @@
     <active>true</active>
     <allowRecall>true</allowRecall>
     <allowedSubmitters>
-        <type>owner</type>
-    </allowedSubmitters>
-    <allowedSubmitters>
         <type>creator</type>
     </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>CaseNumber</field>
+        <field>Owner</field>
+        <field>CreatedDate</field>
+    </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
@@ -19,15 +24,12 @@
         </assignedApprover>
         <label>SCDE Review</label>
         <name>SCDE_Review</name>
-        <rejectBehavior>
-            <type>RejectRequest</type>
-        </rejectBehavior>
     </approvalStep>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
             <approver>
-                <name>devmembercgorme@ed.sc.gov</name>
+                <name>gorme@ed.sc.gov.mergetest</name>
                 <type>user</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
@@ -40,7 +42,7 @@
     </approvalStep>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
-        <formula>AND(RecordType.DeveloperName = "Closure_Waiver_Request", Tier__c = "Tier 3", ISPICKVAL(Waiver_Status__c, "Submitted"))</formula>
+        <formula>AND(RecordType.DeveloperName = &quot;Closure_Waiver_Request&quot;, Tier__c = &quot;Tier 3&quot;, ISPICKVAL(Waiver_Status__c, &quot;Submitted&quot;))</formula>
     </entryCriteria>
     <finalApprovalActions>
         <action>

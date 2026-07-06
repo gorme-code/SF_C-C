@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>62.0</apiVersion>
-    <description>After-insert on Case (RecordType Closure_Submission, Submission_Status = Submitted). Calls invocable Apex to expand the submission into Closure_Event__c rows and acknowledge the Case.</description>
-    <environments>Default</environments>
-    <interviewLabel>Create Closure Events {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Create Closure Events</label>
-    <processType>AutoLaunchedFlow</processType>
-    <status>Active</status>
     <actionCalls>
         <name>Expand_Closure_Submission</name>
         <label>Expand Closure Submission</label>
@@ -21,16 +14,24 @@
                 <elementReference>$Record.Id</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>ExpandClosureSubmission</nameSegment>
     </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <description>After-insert on Case (RecordType Closure_Submission, Submission_Status = Submitted). Calls invocable Apex to expand the submission into Closure_Event__c rows and acknowledge the Case.</description>
+    <environments>Default</environments>
+    <interviewLabel>Create Closure Events {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Closure Events</label>
+    <processType>AutoLaunchedFlow</processType>
     <start>
         <locationX>176</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Expand_Closure_Submission</targetReference>
         </connector>
-        <filterFormula>AND({!$Record.RecordType.DeveloperName} = "Closure_Submission", TEXT({!$Record.Submission_Status__c}) = "Submitted")</filterFormula>
+        <filterFormula>AND({!$Record.RecordType.DeveloperName} = &quot;Closure_Submission&quot;, TEXT({!$Record.Submission_Status__c}) = &quot;Submitted&quot;)</filterFormula>
         <object>Case</object>
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
+    <status>Active</status>
 </Flow>

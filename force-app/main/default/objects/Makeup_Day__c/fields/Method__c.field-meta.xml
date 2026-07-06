@@ -3,6 +3,7 @@
     <fullName>Method__c</fullName>
     <label>Method</label>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>

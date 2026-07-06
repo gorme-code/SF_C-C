@@ -5,6 +5,10 @@
     <allowedSubmitters>
         <type>owner</type>
     </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
@@ -16,13 +20,10 @@
         </assignedApprover>
         <label>SCDE Review</label>
         <name>SCDE_Review</name>
-        <rejectBehavior>
-            <type>RejectRequest</type>
-        </rejectBehavior>
     </approvalStep>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
-        <formula>ISPICKVAL(Status__c, "Proposed")</formula>
+        <formula>ISPICKVAL(Status__c, &quot;Proposed&quot;)</formula>
     </entryCriteria>
     <finalApprovalActions>
         <action>

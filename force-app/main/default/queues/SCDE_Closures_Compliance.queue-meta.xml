@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>SCDE_Closures_Compliance</fullName>
+    <doesIncludeBosses>false</doesIncludeBosses>
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>SCDE Closures Compliance</name>
+    <queueMembers>
+        <users>
+            <user>gorme@ed.sc.gov.mergetest</user>
+        </users>
+    </queueMembers>
     <queueSobject>
         <sobjectType>Case</sobjectType>
     </queueSobject>

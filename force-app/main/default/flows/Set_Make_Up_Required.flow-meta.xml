@@ -50,56 +50,6 @@
         </connector>
     </assignments>
     <decisions>
-        <name>Check_Instructional</name>
-        <label>Instructional Day?</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
-        <defaultConnector>
-            <targetReference>Check_eLearning</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Is Instructional</defaultConnectorLabel>
-        <rules>
-            <name>Not_Instructional</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.Instructional_Day__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Set_Makeup_False</targetReference>
-            </connector>
-            <label>Not Instructional</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Check_eLearning</name>
-        <label>eLearning?</label>
-        <locationX>308</locationX>
-        <locationY>248</locationY>
-        <defaultConnector>
-            <targetReference>Check_Delayed_Dismissal</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Not eLearning</defaultConnectorLabel>
-        <rules>
-            <name>Is_eLearning</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.Closure_Type__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Closed – eLearning</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Set_Makeup_False</targetReference>
-            </connector>
-            <label>Is eLearning</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Check_Delayed_Dismissal</name>
         <label>Delayed or Early Dismissal?</label>
         <locationX>176</locationX>
@@ -132,6 +82,56 @@
         </rules>
     </decisions>
     <decisions>
+        <name>Check_eLearning</name>
+        <label>eLearning?</label>
+        <locationX>308</locationX>
+        <locationY>248</locationY>
+        <defaultConnector>
+            <targetReference>Check_Delayed_Dismissal</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not eLearning</defaultConnectorLabel>
+        <rules>
+            <name>Is_eLearning</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Closure_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed – eLearning</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Makeup_False</targetReference>
+            </connector>
+            <label>Is eLearning</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Instructional</name>
+        <label>Instructional Day?</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Check_eLearning</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Is Instructional</defaultConnectorLabel>
+        <rules>
+            <name>Not_Instructional</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Instructional_Day__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Makeup_False</targetReference>
+            </connector>
+            <label>Not Instructional</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_Method</name>
         <label>Make Up Method Declared?</label>
         <locationX>176</locationX>
@@ -157,31 +157,6 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Check_Reason</name>
-        <label>Reason Requires Makeup?</label>
-        <locationX>308</locationX>
-        <locationY>476</locationY>
-        <defaultConnector>
-            <targetReference>Get_Rules</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Requires (or unknown)</defaultConnectorLabel>
-        <rules>
-            <name>Does_Not_Require</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Reason.Requires_Makeup_Default__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Set_Makeup_False</targetReference>
-            </connector>
-            <label>Does Not Require</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Check_Minimum</name>
         <label>Minimum Already Met?</label>
         <locationX>572</locationX>
@@ -204,6 +179,31 @@
                 <targetReference>Set_Makeup_False</targetReference>
             </connector>
             <label>Minimum Met</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Reason</name>
+        <label>Reason Requires Makeup?</label>
+        <locationX>308</locationX>
+        <locationY>476</locationY>
+        <defaultConnector>
+            <targetReference>Get_Rules</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Requires (or unknown)</defaultConnectorLabel>
+        <rules>
+            <name>Does_Not_Require</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Reason.Requires_Makeup_Default__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Makeup_False</targetReference>
+            </connector>
+            <label>Does Not Require</label>
         </rules>
     </decisions>
     <decisions>
@@ -254,50 +254,11 @@
     </loops>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>Get_Reason</name>
-        <label>Get Closure Reason CMDT</label>
-        <locationX>308</locationX>
-        <locationY>362</locationY>
-        <connector>
-            <targetReference>Check_Reason</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Closure_Reason__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Closure_Reason__mdt</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Rules</name>
-        <label>Get Compliance Rules Default</label>
-        <locationX>440</locationX>
-        <locationY>590</locationY>
-        <connector>
-            <targetReference>Get_Events</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Default</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Compliance_Rules__mdt</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Events</name>
         <label>Get Instructional Closures This Year</label>
         <locationX>440</locationX>
         <locationY>704</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Loop_Events</targetReference>
         </connector>
@@ -325,6 +286,48 @@
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Closure_Event__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Reason</name>
+        <label>Get Closure Reason CMDT</label>
+        <locationX>308</locationX>
+        <locationY>362</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Reason</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Closure_Reason__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Closure_Reason__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Rules</name>
+        <label>Get Compliance Rules Default</label>
+        <locationX>440</locationX>
+        <locationY>590</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Events</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Default</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Compliance_Rules__mdt</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>

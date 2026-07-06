@@ -9,5 +9,6 @@
     <relationshipName>Closure_Events_Waiver</relationshipName>
     <required>false</required>
     <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

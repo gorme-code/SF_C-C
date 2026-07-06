@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Grants SCDE reviewers the ability to edit Closure Events after acknowledgement. Referenced by the No_Edit_After_Acknowledged validation rule via $Permission. Granted by the Calendar_Closures_SCDE_Reviewer permission set (Build Order Step 10).</description>
     <isLicensed>false</isLicensed>
     <label>Calendar Closures SCDE Reviewer</label>
-    <description>Grants SCDE reviewers the ability to edit Closure Events after acknowledgement. Referenced by the No_Edit_After_Acknowledged validation rule via $Permission. Granted by the Calendar_Closures_SCDE_Reviewer permission set (Build Order Step 10).</description>
 </CustomPermission>

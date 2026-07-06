@@ -8,5 +8,6 @@
     <relationshipLabel>Makeup Days Approved</relationshipLabel>
     <relationshipName>ApprovedBy</relationshipName>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

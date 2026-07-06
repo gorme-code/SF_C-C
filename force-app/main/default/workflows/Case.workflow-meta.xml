@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <fieldUpdates>
+        <fullName>ChangePriorityToHigh</fullName>
+        <field>Priority</field>
+        <literalValue>High</literalValue>
+        <name>Changes the case priority to high.</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_Submission_Acknowledged</fullName>
         <field>Submission_Status__c</field>
         <literalValue>Acknowledged</literalValue>
@@ -31,20 +41,20 @@
         <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>Set_Waiver_State_Board_Approved</fullName>
+        <fullName>Set_Waiver_Returned</fullName>
         <field>Waiver_Status__c</field>
-        <literalValue>State_Board_Approved</literalValue>
-        <name>Set Waiver State Board Approved</name>
+        <literalValue>Returned</literalValue>
+        <name>Set Waiver Returned</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
         <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>Set_Waiver_Returned</fullName>
+        <fullName>Set_Waiver_State_Board_Approved</fullName>
         <field>Waiver_Status__c</field>
-        <literalValue>Returned</literalValue>
-        <name>Set Waiver Returned</name>
+        <literalValue>State_Board_Approved</literalValue>
+        <name>Set Waiver State Board Approved</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>

@@ -6,7 +6,8 @@
     <label>District</label>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Makeup Days (District)</relationshipLabel>
-    <relationshipName>District</relationshipName>
+    <relationshipName>MakeupDistrict</relationshipName>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

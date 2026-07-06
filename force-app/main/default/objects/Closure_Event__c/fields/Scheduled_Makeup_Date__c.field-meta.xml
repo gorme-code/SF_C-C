@@ -4,5 +4,6 @@
     <label>Scheduled Makeup Date</label>
     <required>false</required>
     <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Date</type>
 </CustomField>

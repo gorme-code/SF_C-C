@@ -2,10 +2,12 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Hours_Covered__c</fullName>
     <description>How many missed hours this makeup day covers. Allows one Saturday to partially cover multiple half-day closures.</description>
+    <externalId>false</externalId>
     <label>Hours Covered</label>
     <precision>4</precision>
     <required>false</required>
     <scale>2</scale>
+    <trackTrending>false</trackTrending>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>

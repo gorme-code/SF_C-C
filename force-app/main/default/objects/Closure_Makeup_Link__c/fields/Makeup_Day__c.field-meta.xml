@@ -7,5 +7,6 @@
     <relationshipLabel>Closure Makeup Links</relationshipLabel>
     <relationshipName>MakeupDay</relationshipName>
     <required>true</required>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

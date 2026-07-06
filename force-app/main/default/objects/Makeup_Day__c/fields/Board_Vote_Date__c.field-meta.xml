@@ -4,5 +4,6 @@
     <description>When the local board approved (for Saturday or Extended Day methods).</description>
     <label>Board Vote Date</label>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>Date</type>
 </CustomField>

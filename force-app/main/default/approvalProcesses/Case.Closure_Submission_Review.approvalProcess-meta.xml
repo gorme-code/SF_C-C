@@ -5,6 +5,11 @@
     <allowedSubmitters>
         <type>owner</type>
     </allowedSubmitters>
+    <approvalPageFields>
+        <field>CaseNumber</field>
+        <field>Owner</field>
+        <field>CreatedDate</field>
+    </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
@@ -16,13 +21,10 @@
         </assignedApprover>
         <label>SCDE Review</label>
         <name>SCDE_Review</name>
-        <rejectBehavior>
-            <type>RejectRequest</type>
-        </rejectBehavior>
     </approvalStep>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
-        <formula>AND(RecordType.DeveloperName = "Closure_Submission", ISPICKVAL(Submission_Status__c, "Submitted"))</formula>
+        <formula>AND(RecordType.DeveloperName = &quot;Closure_Submission&quot;, ISPICKVAL(Submission_Status__c, &quot;Submitted&quot;))</formula>
     </entryCriteria>
     <finalApprovalActions>
         <action>

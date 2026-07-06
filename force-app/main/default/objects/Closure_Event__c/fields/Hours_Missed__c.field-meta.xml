@@ -3,11 +3,13 @@
     <fullName>Hours_Missed__c</fullName>
     <defaultValue>6.5</defaultValue>
     <description>Instructional hours missed. Drives Make_Up_Required and Tier calculations. Default 6.5 (org-wide default from Compliance_Rules__mdt).</description>
+    <externalId>false</externalId>
     <label>Hours Missed</label>
     <precision>4</precision>
     <required>false</required>
     <scale>2</scale>
     <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>

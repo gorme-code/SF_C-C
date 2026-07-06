@@ -8,6 +8,7 @@
         <actionName>RollupMissedDays</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <nameSegment>RollupMissedDays</nameSegment>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
     <description>Scheduled nightly at 2:00 AM. Calls invocable Apex to recompute Total_Missed_Days_YTD__c on School and District accounts for the current school year. Apex is used because Flow has no SUM/GROUP BY and a per-school query would be SOQL-in-loop.</description>
