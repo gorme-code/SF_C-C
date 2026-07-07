@@ -120,6 +120,7 @@ public with sharing class ExpandClosureSubmission {
                 SELECT School__c, Closure_Date__c FROM Closure_Event__c
                 WHERE School__c IN :allSchoolIds
                 AND Closure_Date__c >= :minDate AND Closure_Date__c <= :maxDate
+                AND Status__c NOT IN ('Cancelled', 'Amended')
             ]) {
                 existingKeys.add(keyOf(ev.School__c, ev.Closure_Date__c));
             }
