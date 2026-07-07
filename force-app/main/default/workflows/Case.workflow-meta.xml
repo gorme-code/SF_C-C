@@ -60,4 +60,14 @@
         <protected>false</protected>
         <reevaluateOnChange>false</reevaluateOnChange>
     </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Stamp_Approval_Decision_Date</fullName>
+        <field>Approval_Decision_Date__c</field>
+        <formula>TODAY()</formula>
+        <name>Stamp Approval Decision Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
 </Workflow>

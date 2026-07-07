@@ -31,11 +31,19 @@
             <name>Set_Submission_Acknowledged</name>
             <type>FieldUpdate</type>
         </action>
+        <action>
+            <name>Stamp_Approval_Decision_Date</name>
+            <type>FieldUpdate</type>
+        </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>false</finalApprovalRecordLock>
     <finalRejectionActions>
         <action>
             <name>Set_Submission_Returned</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Stamp_Approval_Decision_Date</name>
             <type>FieldUpdate</type>
         </action>
     </finalRejectionActions>

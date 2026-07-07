@@ -34,11 +34,19 @@
             <name>Set_Waiver_Local_Board_Approved</name>
             <type>FieldUpdate</type>
         </action>
+        <action>
+            <name>Stamp_Approval_Decision_Date</name>
+            <type>FieldUpdate</type>
+        </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>false</finalApprovalRecordLock>
     <finalRejectionActions>
         <action>
             <name>Set_Waiver_Returned</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Stamp_Approval_Decision_Date</name>
             <type>FieldUpdate</type>
         </action>
     </finalRejectionActions>
