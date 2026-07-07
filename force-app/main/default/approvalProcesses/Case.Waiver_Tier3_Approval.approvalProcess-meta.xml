@@ -29,8 +29,8 @@
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
             <approver>
-                <name>gorme@ed.sc.gov.mergetest</name>
-                <type>user</type>
+                <name>State_Board_Closures</name>
+                <type>queue</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
