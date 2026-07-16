@@ -1,0 +1,52 @@
+<template>
+    <div class={cardClass}>
+
+        <!-- Header row: type badge + record number + urgent flag -->
+        <div class="card-header">
+            <span class={typeBadgeClass}>{typeLabel}</span>
+            <span class="case-num">{card.caseNumber}</span>
+            <template lwc:if={card.isUrgent}>
+                <span class="urgent-flag">⚠ Urgent</span>
+            </template>
+        </div>
+
+        <!-- District / school name — clicking navigates to the record -->
+        <button class="card-title" onclick={handleNavigate}>{card.title}</button>
+
+        <!-- Detail lines -->
+        <div class="card-meta">
+            <template lwc:if={card.dateLabel}>
+                <span class="meta-row">📅 {card.dateLabel}</span>
+            </template>
+            <template lwc:if={card.reason}>
+                <span class="meta-row">{card.reason}</span>
+            </template>
+            <template lwc:if={card.scope}>
+                <span class="meta-row">🏫 {scopeLabel}</span>
+            </template>
+        </div>
+
+        <!-- Footer: tier pill + action buttons OR approved stamp -->
+        <div class="card-footer">
+            <template lwc:if={card.tier}>
+                <span class={tierClass}>{card.tier}</span>
+            </template>
+
+            <template lwc:if={isTodo}>
+                <div class="action-btns">
+                    <button class="btn-return" onclick={handleReturn}>Return</button>
+                    <button class="btn-approve" onclick={handleApprove}>Approve ✓</button>
+                </div>
+            </template>
+
+            <template lwc:if={isDone}>
+                <span class="approved-stamp">
+                    ✓
+                    <template lwc:if={card.approvedDate}>&nbsp;{card.approvedDate}</template>
+                    <template lwc:else>Approved</template>
+                </span>
+            </template>
+        </div>
+
+    </div>
+</template>

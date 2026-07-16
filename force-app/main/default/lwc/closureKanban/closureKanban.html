@@ -1,0 +1,158 @@
+<template>
+    <div class="board-wrapper">
+
+        <!-- ── Header ── -->
+        <div class="board-header">
+            <div class="header-left">
+                <h1 class="board-title">Approval Queue</h1>
+                <span class="header-sub">SCDE Closures &amp; Compliance</span>
+            </div>
+            <div class="header-right">
+                <button class={closureFilterClass} data-type="closure" onclick={toggleFilter}>📋 Closures</button>
+                <button class={makeupFilterClass}  data-type="makeup"  onclick={toggleFilter}>📅 Makeup</button>
+                <button class={waiverFilterClass}   data-type="waiver"  onclick={toggleFilter}>⚖️ Waivers</button>
+                <button class="refresh-btn" onclick={handleRefresh} disabled={isLoading}>↻ Refresh</button>
+            </div>
+        </div>
+
+        <!-- ── Summary strip ── -->
+        <div class="summary-strip">
+            <div class="stat-tile urgent-tile">
+                <span class="stat-num">{totalPending}</span>
+                <span class="stat-label">Pending Action</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-num">{urgentCount}</span>
+                <span class="stat-label">Urgent (Tier 3+)</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-num">{closurePendingCount}</span>
+                <span class="stat-label">Closure Submissions</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-num">{makeupPendingCount}</span>
+                <span class="stat-label">Makeup Days</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-num">{waiverPendingCount}</span>
+                <span class="stat-label">Waiver Requests</span>
+            </div>
+        </div>
+
+        <!-- ── Loading ── -->
+        <template lwc:if={isLoading}>
+            <div class="spinner-wrap">
+                <lightning-spinner alternative-text="Loading approval queue" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ── Error ── -->
+        <template lwc:if={hasError}>
+            <div class="error-box">
+                <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                <span>{error}</span>
+                <button onclick={handleRefresh}>Retry</button>
+            </div>
+        </template>
+
+        <!-- ── Board ── -->
+        <template lwc:if={showBoard}>
+            <div class="kanban-board">
+
+                <!-- To Do -->
+                <div class="kanban-col col-todo">
+                    <div class="col-header">
+                        <span class="col-label">📥 To Do</span>
+                        <span class="col-count">{todoCount}</span>
+                    </div>
+                    <div class="col-cards">
+                        <template for:each={filteredTodo} for:item="card">
+                            <c-closure-kanban-card
+                                key={card.recordId}
+                                card={card}
+                                onapprove={handleApprove}
+                                onreturn={handleReturn}>
+                            </c-closure-kanban-card>
+                        </template>
+                        <template lwc:if={emptyTodo}>
+                            <div class="empty-col">🎉 All caught up — nothing pending!</div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- In Review (v1 placeholder — drag-and-drop in a future step) -->
+                <div class="kanban-col col-review">
+                    <div class="col-header">
+                        <span class="col-label">👁 In Review</span>
+                        <span class="col-count">0</span>
+                    </div>
+                    <div class="col-cards">
+                        <div class="empty-col placeholder-text">
+                            Drag-and-drop coming in a future update
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approved (last 30 days) -->
+                <div class="kanban-col col-done">
+                    <div class="col-header">
+                        <span class="col-label">✅ Approved</span>
+                        <span class="col-count">{doneCount}</span>
+                    </div>
+                    <div class="col-cards">
+                        <template for:each={filteredDone} for:item="card">
+                            <c-closure-kanban-card
+                                key={card.recordId}
+                                card={card}>
+                            </c-closure-kanban-card>
+                        </template>
+                        <template lwc:if={emptyDone}>
+                            <div class="empty-col">No approved items in the last 30 days</div>
+                        </template>
+                    </div>
+                </div>
+
+            </div>
+        </template>
+
+        <!-- ── Confirm Modal ── -->
+        <template lwc:if={showModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-title"
+                     class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={handleModalCancel}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                        </button>
+                        <h2 id="modal-title" class="slds-modal__title">{modalTitle}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-textarea
+                            label="Comments (optional)"
+                            placeholder="Add a note for the record history..."
+                            value={comments}
+                            onchange={handleCommentsChange}
+                            max-length="1000">
+                        </lightning-textarea>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button
+                            label="Cancel"
+                            onclick={handleModalCancel}
+                            disabled={isProcessing}>
+                        </lightning-button>
+                        <lightning-button
+                            label={confirmButtonLabel}
+                            variant={confirmButtonVariant}
+                            onclick={handleModalConfirm}
+                            disabled={isProcessing}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </div>
+</template>

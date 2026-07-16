@@ -1,0 +1,152 @@
+.kanban-card {
+    background: #fff;
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #c9c9c9;
+    margin-bottom: 8px;
+    transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.kanban-card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+    transform: translateY(-1px);
+}
+
+.kanban-card.type-closure { border-left-color: #0176d3; }
+.kanban-card.type-makeup  { border-left-color: #e8822a; }
+.kanban-card.type-waiver  { border-left-color: #8059f7; }
+.kanban-card.urgent       { border-left-color: #c23934 !important; }
+
+/* Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.type-badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.badge-closure { background: #eaf4ff; color: #0176d3; }
+.badge-makeup  { background: #fff3e0; color: #bf5700; }
+.badge-waiver  { background: #f3edff; color: #5a1ba1; }
+
+.case-num {
+    font-size: 10px;
+    color: #888;
+    margin-left: auto;
+}
+
+.urgent-flag {
+    font-size: 10px;
+    font-weight: 700;
+    color: #c23934;
+}
+
+/* Title */
+.card-title {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0176d3;
+    cursor: pointer;
+    line-height: 1.3;
+}
+
+.card-title:hover {
+    text-decoration: underline;
+}
+
+/* Meta */
+.card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 8px;
+}
+
+.meta-row {
+    font-size: 11px;
+    color: #555;
+}
+
+/* Footer */
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+    gap: 8px;
+}
+
+/* Tier pills */
+.tier-pill {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tier-tier1 { background: #d4edda; color: #155724; }
+.tier-tier2 { background: #fff3cd; color: #856404; }
+.tier-tier3 { background: #f8d7da; color: #721c24; }
+.tier-tier4 { background: #f8d7da; color: #721c24; }
+
+/* Action buttons */
+.action-btns {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.btn-approve,
+.btn-return {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid;
+    background: #fff;
+    line-height: 1.2;
+}
+
+.btn-approve {
+    border-color: #2e7d32;
+    color: #2e7d32;
+}
+
+.btn-approve:hover { background: #d4edda; }
+
+.btn-return {
+    border-color: #c23934;
+    color: #c23934;
+}
+
+.btn-return:hover { background: #f8d7da; }
+
+/* Approved stamp */
+.approved-stamp {
+    font-size: 11px;
+    color: #2e7d32;
+    font-weight: 600;
+    margin-left: auto;
+}
