@@ -3,6 +3,17 @@ import { NavigationMixin } from 'lightning/navigation';
 
 const TYPE_LABELS = { closure: 'Closure', makeup: 'Makeup', waiver: 'Waiver' };
 
+const STATUS_LABELS = {
+    Acknowledged:        'Approved',
+    Local_Board_Approved:'Approved',
+    State_Board_Approved:'Approved',
+    Approved:            'Approved',
+    Submitted:           'Submitted',
+    Proposed:            'Proposed',
+    Returned:            'Returned',
+    Cancelled:           'Cancelled'
+};
+
 const SCOPE_LABELS = {
     District_Wide:     'District-Wide',
     Multiple_Schools:  'Multiple Schools',
@@ -33,6 +44,10 @@ export default class ClosureKanbanCard extends NavigationMixin(LightningElement)
 
     get scopeLabel() {
         return SCOPE_LABELS[this.card.scope] || this.card.scope;
+    }
+
+    get statusLabel() {
+        return STATUS_LABELS[this.card.status] || this.card.status;
     }
 
     get isTodo() {

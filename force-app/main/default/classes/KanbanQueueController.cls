@@ -155,10 +155,10 @@ public with sharing class KanbanQueueController {
 
             if (c.RecordType.DeveloperName == 'Closure_Submission') {
                 item.type   = 'closure';
-                item.status = c.Submission_Status__c;
+                item.status = 'Approved';
             } else {
                 item.type   = 'waiver';
-                item.status = c.Waiver_Status__c;
+                item.status = 'Approved';
             }
             items.add(item);
         }

@@ -41,9 +41,8 @@
 
             <template lwc:if={isDone}>
                 <span class="approved-stamp">
-                    ✓
-                    <template lwc:if={card.approvedDate}>&nbsp;{card.approvedDate}</template>
-                    <template lwc:else>Approved</template>
+                    ✓&nbsp;{statusLabel}
+                    <template lwc:if={card.approvedDate}>&nbsp;· {card.approvedDate}</template>
                 </span>
             </template>
         </div>
