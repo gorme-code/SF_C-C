@@ -103,7 +103,8 @@
                         <template for:each={filteredDone} for:item="card">
                             <c-closure-kanban-card
                                 key={card.recordId}
-                                card={card}>
+                                card={card}
+                                onrecall={handleRecall}>
                             </c-closure-kanban-card>
                         </template>
                         <template lwc:if={emptyDone}>

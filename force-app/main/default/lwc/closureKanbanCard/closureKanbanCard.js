@@ -76,4 +76,10 @@ export default class ClosureKanbanCard extends NavigationMixin(LightningElement)
             detail: { workItemId: this.card.workItemId, recordId: this.card.recordId }
         }));
     }
+
+    handleRecall() {
+        this.dispatchEvent(new CustomEvent('recall', {
+            detail: { recordId: this.card.recordId, type: this.card.type }
+        }));
+    }
 }

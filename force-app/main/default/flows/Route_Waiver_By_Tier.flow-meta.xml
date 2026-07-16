@@ -48,6 +48,12 @@
                 <stringValue>Waiver_Tier2_Approval</stringValue>
             </value>
         </inputParameters>
+        <inputParameters>
+            <name>skipEntryCriteria</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
         <nameSegment>submit</nameSegment>
     </actionCalls>
     <actionCalls>
@@ -68,6 +74,12 @@
             <name>approvalProcessNameOrId</name>
             <value>
                 <stringValue>Waiver_Tier3_Approval</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>skipEntryCriteria</name>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </inputParameters>
         <nameSegment>submit</nameSegment>

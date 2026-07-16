@@ -150,3 +150,19 @@
     font-weight: 600;
     margin-left: auto;
 }
+
+/* Recall button (done column) */
+.btn-recall {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #706e6b;
+    color: #444;
+    background: #fff;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.btn-recall:hover { background: #f3f3f3; }

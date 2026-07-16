@@ -7,6 +7,9 @@
         <locationY>134</locationY>
         <actionName>ExpandClosureSubmission</actionName>
         <actionType>apex</actionType>
+        <connector>
+            <targetReference>Submit_For_Approval</targetReference>
+        </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>caseId</name>
@@ -15,6 +18,33 @@
             </value>
         </inputParameters>
         <nameSegment>ExpandClosureSubmission</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>Submit_For_Approval</name>
+        <label>Submit for Approval</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <actionName>submit</actionName>
+        <actionType>submit</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>objectId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>processDefinitionNameOrId</name>
+            <value>
+                <stringValue>Closure_Submission_Review</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>skipEntryCriteria</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
     <description>After-insert on Case (RecordType Closure_Submission, Submission_Status = Submitted). Calls invocable Apex to expand the submission into Closure_Event__c rows and acknowledge the Case.</description>

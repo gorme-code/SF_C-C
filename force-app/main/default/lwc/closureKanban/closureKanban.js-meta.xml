@@ -6,6 +6,5 @@
     <description>Kanban board for SCDE reviewers — approve closure submissions, makeup days, and waiver requests from one place.</description>
     <targets>
         <target>lightning__AppPage</target>
-        <target>lightning__HomePage</target>
     </targets>
 </LightningComponentBundle>

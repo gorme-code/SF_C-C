@@ -127,6 +127,7 @@ public with sharing class KanbanQueueController {
 
         // ── Recently Approved (last 30 days) ──────────────────────────────
         Date cutoff = Date.today().addDays(-30);
+        Set<Id> pendingIds = workItemByRecord.keySet();
 
         for (Case c : [
             SELECT Id, CaseNumber, RecordType.DeveloperName, Account.Name,
@@ -140,6 +141,7 @@ public with sharing class KanbanQueueController {
                     AND Waiver_Status__c IN ('Local_Board_Approved', 'State_Board_Approved'))
             )
             AND LastModifiedDate >= :cutoff
+            AND Id NOT IN :pendingIds
             ORDER BY LastModifiedDate DESC
             LIMIT 25
         ]) {
@@ -168,6 +170,7 @@ public with sharing class KanbanQueueController {
             FROM Makeup_Day__c
             WHERE Status__c = 'Approved'
             AND LastModifiedDate >= :cutoff
+            AND Id NOT IN :pendingIds
             ORDER BY LastModifiedDate DESC
             LIMIT 10
         ]) {
@@ -196,5 +199,41 @@ public with sharing class KanbanQueueController {
             req.setComments(comments);
         }
         Approval.process(req);
+    }
+
+    @AuraEnabled
+    public static void recallApprovedItem(String recordId, String type, String comments) {
+        Id recId = Id.valueOf(recordId);
+
+        if (type == 'closure') {
+            update new Case(Id = recId, Submission_Status__c = 'Submitted');
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(recId);
+            req.setProcessDefinitionNameOrId('Closure_Submission_Review');
+            req.setSkipEntryCriteria(true);
+            if (String.isNotBlank(comments)) req.setComments(comments);
+            Approval.process(req);
+
+        } else if (type == 'makeup') {
+            update new Makeup_Day__c(Id = recId, Status__c = 'Proposed');
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(recId);
+            req.setProcessDefinitionNameOrId('Makeup_Approval');
+            req.setSkipEntryCriteria(true);
+            if (String.isNotBlank(comments)) req.setComments(comments);
+            Approval.process(req);
+
+        } else if (type == 'waiver') {
+            Case c = [SELECT Id, Tier__c FROM Case WHERE Id = :recId LIMIT 1];
+            update new Case(Id = recId, Waiver_Status__c = 'Submitted');
+            String processName = (c.Tier__c == 'Tier 3')
+                ? 'Waiver_Tier3_Approval' : 'Waiver_Tier2_Approval';
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(recId);
+            req.setProcessDefinitionNameOrId(processName);
+            req.setSkipEntryCriteria(true);
+            if (String.isNotBlank(comments)) req.setComments(comments);
+            Approval.process(req);
+        }
     }
 }

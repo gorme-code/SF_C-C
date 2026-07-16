@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <recordUpdates>
+        <name>Close_NonMakeup_Events</name>
+        <label>Close Non-Makeup Events</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <connector>
+            <targetReference>Acknowledge_Makeup_Events</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Source_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Make_Up_Required__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Closure_Event__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Acknowledge_Makeup_Events</name>
+        <label>Acknowledge Makeup Events</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Source_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Make_Up_Required__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Submitted</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Acknowledged</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Closure_Event__c</object>
+    </recordUpdates>
+    <apiVersion>62.0</apiVersion>
+    <description>After SCDE approval of a Closure_Submission Case (Submission_Status__c transitions to Acknowledged): sets non-makeup CE records to Closed and makeup-required CE records still in Submitted to Acknowledged.</description>
+    <environments>Default</environments>
+    <interviewLabel>Acknowledge Closure Events {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Acknowledge Closure Events</label>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Close_NonMakeup_Events</targetReference>
+        </connector>
+        <filterFormula>AND({!$Record.RecordType.DeveloperName} = &quot;Closure_Submission&quot;, ISPICKVAL({!$Record.Submission_Status__c}, &quot;Acknowledged&quot;), NOT(ISPICKVAL({!$Record__Prior.Submission_Status__c}, &quot;Acknowledged&quot;)))</filterFormula>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

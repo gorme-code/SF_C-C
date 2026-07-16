@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>62.0</apiVersion>
     <assignments>
         <name>Build_Event</name>
         <label>Build Event To Close</label>
@@ -31,13 +30,14 @@
             <targetReference>Loop_Links</targetReference>
         </connector>
     </assignments>
-    <description>After-save on Makeup_Day__c when Status becomes Approved. Sets every linked Closure_Event (via Closure_Makeup_Link__c) to Closed (UC-11). Bulk-safe: builds a collection and updates once.</description>
+    <apiVersion>62.0</apiVersion>
+    <description>After-save on Case (Closure_Waiver_Request) when Waiver_Status__c transitions to Local_Board_Approved or State_Board_Approved. Sets every linked Closure_Event (via Waiver_Closure_Link__c) to Closed (shows green on calendar). Bulk-safe.</description>
     <environments>Default</environments>
-    <interviewLabel>Close Events On Makeup Approval {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Close Events On Makeup Approval</label>
+    <interviewLabel>Close Events On Waiver Approval {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Close Events On Waiver Approval</label>
     <loops>
         <name>Loop_Links</name>
-        <label>Loop Makeup Links</label>
+        <label>Loop Waiver Links</label>
         <locationX>176</locationX>
         <locationY>350</locationY>
         <collectionReference>Get_Links</collectionReference>
@@ -52,7 +52,7 @@
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
         <name>Get_Links</name>
-        <label>Get Makeup Links</label>
+        <label>Get Waiver Links</label>
         <locationX>176</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
@@ -61,14 +61,14 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Makeup_Day__c</field>
+            <field>Waiver_Case__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>$Record.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Closure_Makeup_Link__c</object>
+        <object>Waiver_Closure_Link__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
@@ -84,17 +84,19 @@
         <connector>
             <targetReference>Get_Links</targetReference>
         </connector>
-        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Status__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Approved</stringValue>
-            </value>
-        </filters>
-        <object>Makeup_Day__c</object>
-        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <filterFormula>AND(
+    {!$Record.RecordType.DeveloperName} = &quot;Closure_Waiver_Request&quot;,
+    OR(
+        ISPICKVAL({!$Record.Waiver_Status__c}, &quot;Local_Board_Approved&quot;),
+        ISPICKVAL({!$Record.Waiver_Status__c}, &quot;State_Board_Approved&quot;)
+    ),
+    NOT(OR(
+        ISPICKVAL({!$Record__Prior.Waiver_Status__c}, &quot;Local_Board_Approved&quot;),
+        ISPICKVAL({!$Record__Prior.Waiver_Status__c}, &quot;State_Board_Approved&quot;)
+    ))
+)</filterFormula>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>

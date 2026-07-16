@@ -1,0 +1,15 @@
+"sf__Id","sf__Error","Id"
+"a1AWA000001YUuL2AW","DELETE_FAILED:Your attempt to delete MD-0000000 could not be completed because it is associated with the following closure makeup links.: CML-0000000
+:--","a1AWA000001YUuL2AW"
+"a1AWA000001YW052AG","DELETE_FAILED:Your attempt to delete MD-0000001 could not be completed because it is associated with the following closure makeup links.: CML-0000001, CML-0000002
+:--","a1AWA000001YW052AG"
+"a1AWA000001Yfhh2AC","DELETE_FAILED:Your attempt to delete MD-0000002 could not be completed because it is associated with the following closure makeup links.: CML-0000003, CML-0000004
+:--","a1AWA000001Yfhh2AC"
+"a1AWA000001Yfxp2AC","DELETE_FAILED:Your attempt to delete MD-0000003 could not be completed because it is associated with the following closure makeup links.: CML-0000005, CML-0000006
+:--","a1AWA000001Yfxp2AC"
+"a1AWA000001Yv052AC","DELETE_FAILED:Your attempt to delete MD-0000004 could not be completed because it is associated with the following closure makeup links.: CML-0000007
+:--","a1AWA000001Yv052AC"
+"a1AWA000001aMB72AM","DELETE_FAILED:Your attempt to delete MD-0000005 could not be completed because it is associated with the following closure makeup links.: CML-0000008, CML-0000009
+:--","a1AWA000001aMB72AM"
+"a1AWA000001aMRF2A2","DELETE_FAILED:Your attempt to delete MD-0000006 could not be completed because it is associated with the following closure makeup links.: CML-0000010, CML-0000011
+:--","a1AWA000001aMRF2A2"

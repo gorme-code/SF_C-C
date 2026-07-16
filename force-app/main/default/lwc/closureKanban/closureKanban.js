@@ -1,7 +1,8 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getQueueItems   from '@salesforce/apex/KanbanQueueController.getQueueItems';
-import processApproval from '@salesforce/apex/KanbanQueueController.processApproval';
+import getQueueItems       from '@salesforce/apex/KanbanQueueController.getQueueItems';
+import processApproval     from '@salesforce/apex/KanbanQueueController.processApproval';
+import recallApprovedItem  from '@salesforce/apex/KanbanQueueController.recallApprovedItem';
 
 export default class ClosureKanban extends LightningElement {
 
@@ -69,6 +70,11 @@ export default class ClosureKanban extends LightningElement {
     // ── Card action events ────────────────────────────────────────────────
     handleApprove(event) { this.openModal(event.detail.workItemId, 'Approve'); }
     handleReturn(event)  { this.openModal(event.detail.workItemId, 'Reject');  }
+    handleRecall(event)  {
+        this.pendingAction = { recordId: event.detail.recordId, type: event.detail.type, action: 'Recall' };
+        this.comments      = '';
+        this.showModal     = true;
+    }
 
     openModal(workItemId, action) {
         this.pendingAction = { workItemId, action };
@@ -86,13 +92,24 @@ export default class ClosureKanban extends LightningElement {
 
     handleModalConfirm() {
         this.isProcessing = true;
-        processApproval({
-            workItemId: this.pendingAction.workItemId,
-            action:     this.pendingAction.action,
-            comments:   this.comments
-        })
+        const isRecall = this.pendingAction.action === 'Recall';
+
+        const apiCall = isRecall
+            ? recallApprovedItem({
+                recordId: this.pendingAction.recordId,
+                type:     this.pendingAction.type,
+                comments: this.comments
+              })
+            : processApproval({
+                workItemId: this.pendingAction.workItemId,
+                action:     this.pendingAction.action,
+                comments:   this.comments
+              });
+
+        apiCall
             .then(() => {
-                const label = this.pendingAction.action === 'Approve' ? 'approved' : 'returned';
+                const label = isRecall ? 'recalled to review'
+                    : (this.pendingAction.action === 'Approve' ? 'approved' : 'returned');
                 this.dispatchEvent(new ShowToastEvent({
                     title:   'Success',
                     message: `Record ${label} successfully.`,
@@ -114,9 +131,21 @@ export default class ClosureKanban extends LightningElement {
             });
     }
 
-    get modalTitle()          { return this.pendingAction?.action === 'Approve' ? 'Confirm Approval' : 'Confirm Return'; }
-    get confirmButtonLabel()  { return this.pendingAction?.action === 'Approve' ? 'Approve'          : 'Return';         }
-    get confirmButtonVariant(){ return this.pendingAction?.action === 'Approve' ? 'success'          : 'destructive';    }
+    get modalTitle() {
+        if (this.pendingAction?.action === 'Approve') return 'Confirm Approval';
+        if (this.pendingAction?.action === 'Recall')  return 'Recall to To Do';
+        return 'Confirm Return';
+    }
+    get confirmButtonLabel() {
+        if (this.pendingAction?.action === 'Approve') return 'Approve';
+        if (this.pendingAction?.action === 'Recall')  return 'Recall';
+        return 'Return';
+    }
+    get confirmButtonVariant() {
+        if (this.pendingAction?.action === 'Approve') return 'success';
+        if (this.pendingAction?.action === 'Recall')  return 'brand';
+        return 'destructive';
+    }
 
     handleRefresh() { this.loadCards(); }
 }

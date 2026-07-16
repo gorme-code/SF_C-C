@@ -8,6 +8,9 @@
     <allowedSubmitters>
         <type>owner</type>
     </allowedSubmitters>
+    <allowedSubmitters>
+        <type>allInternalUsers</type>
+    </allowedSubmitters>
     <approvalPageFields>
         <field>CaseNumber</field>
         <field>Owner</field>
